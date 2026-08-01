@@ -6,6 +6,9 @@ dist
 dist-ssr
 *.local
 
+# Dossier lourds
+public/images-originals/
+
 # Variables d'environnement (clés Supabase, etc.)
 .env
 .env.local

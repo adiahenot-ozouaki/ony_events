@@ -1,6 +1,6 @@
-// ⚠️ DONNÉES FICTIVES — à remplacer par les vraies informations de l'agence.
-// Ce fichier centralise tout ce qui apparaît sur le site (page "À propos",
-// pied de page, etc.) : modifie ici, ça se répercute partout.
+// Informations réelles de l'agence ONY. Ce fichier centralise tout ce qui
+// apparaît sur le site (page "À propos", pied de page, etc.) : modifie ici,
+// ça se répercute partout.
 
 export const agencyInfo = {
   nom: 'ONY',
@@ -13,13 +13,13 @@ export const agencyInfo = {
   ],
 
   adresse: {
-    ligne1: 'Quartier Glass, Boulevard Triomphal Omar Bongo',
+    ligne1: '239 Rue Nzoughe Mendome Edang, Nzeng-Ayong',
     ville: 'Libreville',
     pays: 'Gabon',
   },
 
-  telephone: '+241 74 12 34 56',
-  email: 'contact@ony.fr',
+  telephone: '+241 74 80 64 68',
+  email: 'ony.locations.services@gmail.com',
 
   horaires: [
     { jour: 'Lundi - Vendredi', heures: '8h00 - 18h00' },
@@ -27,17 +27,18 @@ export const agencyInfo = {
     { jour: 'Dimanche', heures: 'Fermé' },
   ],
 
-  // Coordonnées approximatives du centre de Libreville — à remplacer par
-  // la position exacte de l'agence.
   coordonnees: {
-    lat: 0.42255386731038475,
-    lng: 9.483275970699863,
+    lat: 0.42278151509863277,
+    lng: 9.483240460882305,
   },
 
+  // Champs vides = pas encore de page active. Le footer masque
+  // automatiquement les icônes correspondantes tant qu'un lien n'est pas
+  // renseigné ici.
   reseaux: {
-    facebook: '#',
-    instagram: '#',
-    linkedin: '#',
+    facebook: '',
+    instagram: '',
+    linkedin: '',
   },
 } as const;
 

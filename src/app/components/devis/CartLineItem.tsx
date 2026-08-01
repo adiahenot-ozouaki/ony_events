@@ -17,6 +17,8 @@ export function CartLineItem({ product, quantite }: CartLineItemProps) {
       <img
         src={productImage(product)}
         alt={formatProductName(product)}
+        loading="lazy"
+        decoding="async"
         className="w-20 h-20 object-cover rounded-md flex-shrink-0"
       />
       <div className="flex-1 min-w-0">

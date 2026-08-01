@@ -35,6 +35,8 @@ export function AboutIntro() {
               <img
                 src="/images/tente_special.jpg"
                 alt={`Mobilier ${agencyInfo.nom}`}
+                loading="lazy"
+                decoding="async"
                 className="w-full h-full object-cover"
               />
             </motion.div>

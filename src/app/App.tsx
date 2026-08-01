@@ -1,14 +1,24 @@
-import { useEffect } from 'react';
+import { lazy, Suspense, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'motion/react';
-import { Home } from './pages/Home';
-import { CataloguePage } from './pages/CataloguePage';
-import { ProductDetailPage } from './pages/ProductDetailPage';
-import { DevisPage } from './pages/DevisPage';
-import { AboutPage } from './pages/AboutPage';
-import { GalleryPage } from './pages/GalleryPage';
 import { CartProvider } from './context/CartContext';
 import { PageTransition } from './components/motion/PageTransition';
+
+// Chaque page est chargée à la demande (dynamic import) au lieu d'être
+// incluse dans le bundle initial. Le navigateur ne télécharge le code de
+// /catalogue, /devis, /galerie, etc. que lorsque l'utilisateur y navigue.
+const Home = lazy(() => import('./pages/Home').then((m) => ({ default: m.Home })));
+const CataloguePage = lazy(() =>
+  import('./pages/CataloguePage').then((m) => ({ default: m.CataloguePage }))
+);
+const ProductDetailPage = lazy(() =>
+  import('./pages/ProductDetailPage').then((m) => ({ default: m.ProductDetailPage }))
+);
+const DevisPage = lazy(() => import('./pages/DevisPage').then((m) => ({ default: m.DevisPage })));
+const AboutPage = lazy(() => import('./pages/AboutPage').then((m) => ({ default: m.AboutPage })));
+const GalleryPage = lazy(() =>
+  import('./pages/GalleryPage').then((m) => ({ default: m.GalleryPage }))
+);
 
 function AnimatedRoutes() {
   const location = useLocation();
@@ -24,14 +34,16 @@ function AnimatedRoutes() {
 
   return (
     <AnimatePresence mode="wait">
-      <Routes location={location} key={location.pathname}>
-        <Route path="/" element={<PageTransition><Home /></PageTransition>} />
-        <Route path="/catalogue" element={<PageTransition><CataloguePage /></PageTransition>} />
-        <Route path="/produit/:id" element={<PageTransition><ProductDetailPage /></PageTransition>} />
-        <Route path="/devis" element={<PageTransition><DevisPage /></PageTransition>} />
-        <Route path="/a-propos" element={<PageTransition><AboutPage /></PageTransition>} />
-        <Route path="/galerie" element={<PageTransition><GalleryPage /></PageTransition>} />
-      </Routes>
+      <Suspense fallback={null}>
+        <Routes location={location} key={location.pathname}>
+          <Route path="/" element={<PageTransition><Home /></PageTransition>} />
+          <Route path="/catalogue" element={<PageTransition><CataloguePage /></PageTransition>} />
+          <Route path="/produit/:id" element={<PageTransition><ProductDetailPage /></PageTransition>} />
+          <Route path="/devis" element={<PageTransition><DevisPage /></PageTransition>} />
+          <Route path="/a-propos" element={<PageTransition><AboutPage /></PageTransition>} />
+          <Route path="/galerie" element={<PageTransition><GalleryPage /></PageTransition>} />
+        </Routes>
+      </Suspense>
     </AnimatePresence>
   );
 }

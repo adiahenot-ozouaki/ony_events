@@ -2,6 +2,12 @@ import { Link } from 'react-router-dom';
 import { MapPin, Phone, Mail, Facebook, Instagram, Linkedin } from 'lucide-react';
 import { agencyInfo } from '../../constants/agency_info';
 
+const SOCIAL_LINKS = [
+  { key: 'facebook', href: agencyInfo.reseaux.facebook, Icon: Facebook, label: 'Facebook' },
+  { key: 'instagram', href: agencyInfo.reseaux.instagram, Icon: Instagram, label: 'Instagram' },
+  { key: 'linkedin', href: agencyInfo.reseaux.linkedin, Icon: Linkedin, label: 'LinkedIn' },
+].filter((social) => social.href);
+
 export function Footer() {
   return (
     <footer className="bg-[#0B0B0B] text-white">
@@ -59,17 +65,22 @@ export function Footer() {
 
         <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-gray-400 text-sm">© 2026 {agencyInfo.nom}. Tous droits réservés.</p>
-          <div className="flex items-center gap-4">
-            <a href={agencyInfo.reseaux.facebook} className="text-gray-400 hover:text-[var(--gold)] transition-colors">
-              <Facebook size={20} />
-            </a>
-            <a href={agencyInfo.reseaux.instagram} className="text-gray-400 hover:text-[var(--gold)] transition-colors">
-              <Instagram size={20} />
-            </a>
-            <a href={agencyInfo.reseaux.linkedin} className="text-gray-400 hover:text-[var(--gold)] transition-colors">
-              <Linkedin size={20} />
-            </a>
-          </div>
+          {SOCIAL_LINKS.length > 0 && (
+            <div className="flex items-center gap-4">
+              {SOCIAL_LINKS.map(({ key, href, Icon, label }) => (
+                <a
+                  key={key}
+                  href={href}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label={label}
+                  className="text-gray-400 hover:text-[var(--gold)] transition-colors"
+                >
+                  <Icon size={20} />
+                </a>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </footer>
