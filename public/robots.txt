@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://ony.ga/sitemap.xml

@@ -7,8 +7,15 @@ import { FeaturedProductsSection } from '../components/home/FeaturedProductsSect
 import { WhyChooseUsSection } from '../components/home/WhyChooseUsSection';
 import { RealisationsSection } from '../components/home/RealisationsSection';
 import { GallerySection } from '../components/home/GallerySection';
+import { usePageTitle } from '../../lib/usePageTitle';
 
 export function Home() {
+  usePageTitle({
+    title: 'Location de mobilier événementiel au Gabon',
+    description:
+      "Votre partenaire pour la location de mobilier et d'équipements événementiels au Gabon : chaises, tables, tentes, couverts, habillages et prestations.",
+  });
+
   return (
     <div className="min-h-screen bg-white">
       <Navbar />

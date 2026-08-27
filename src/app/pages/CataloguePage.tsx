@@ -1,20 +1,51 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { SearchBar } from '../components/catalogue/SearchBar';
-import { CategoryFilters, type CatalogueFilter } from '../components/catalogue/CategoryFilters';
+import { CategoryFilters, catalogueFilters, type CatalogueFilter } from '../components/catalogue/CategoryFilters';
 import { ProductGrid } from '../components/catalogue/ProductGrid';
 import { Pagination } from '../components/catalogue/Pagination';
 import { onyItems } from '../../constants/ony_items';
+import { usePageTitle } from '../../lib/usePageTitle';
 
 const PAGE_SIZE = 15;
 
+// Vérifie que la valeur reçue en query param correspond bien à un filtre
+// connu, pour éviter d'accepter une catégorie inventée/arbitraire dans l'URL.
+function parseFilterFromParams(value: string | null): CatalogueFilter {
+  if (value && (catalogueFilters as readonly string[]).includes(value)) {
+    return value as CatalogueFilter;
+  }
+  return 'Tous';
+}
+
 export function CataloguePage() {
-  const [activeFilter, setActiveFilter] = useState<CatalogueFilter>('Tous');
+  usePageTitle({
+    title: 'Catalogue',
+    description: `Parcourez nos ${onyItems.length} références de mobilier et équipements événementiels à louer : chaises, tables, tentes, couverts et prestations.`,
+  });
+
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [activeFilter, setActiveFilterState] = useState<CatalogueFilter>(() =>
+    parseFilterFromParams(searchParams.get('categorie'))
+  );
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
   const resultsRef = useRef<HTMLElement>(null);
+
+  // Garde le filtre synchronisé avec l'URL (permet de partager/rafraîchir un
+  // lien filtré, ex. venant de la page d'accueil).
+  function handleFilterChange(filter: CatalogueFilter) {
+    setActiveFilterState(filter);
+    if (filter === 'Tous') {
+      searchParams.delete('categorie');
+      setSearchParams(searchParams, { replace: true });
+    } else {
+      setSearchParams({ categorie: filter }, { replace: true });
+    }
+  }
 
   const filteredItems = useMemo(() => {
     const query = search.trim().toLowerCase();
@@ -80,7 +111,7 @@ export function CataloguePage() {
           </motion.p>
           <br />
           <SearchBar value={search} onChange={setSearch} />
-          <CategoryFilters activeFilter={activeFilter} onChange={setActiveFilter} />
+          <CategoryFilters activeFilter={activeFilter} onChange={handleFilterChange} />
         </div>
       </section>
 

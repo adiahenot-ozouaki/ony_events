@@ -14,6 +14,7 @@ import {
   isVIP,
   productImage,
 } from '../../constants/ony_products';
+import { usePageTitle } from '../../lib/usePageTitle';
 
 export function ProductDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -21,6 +22,20 @@ export function ProductDetailPage() {
   const { addItem } = useCart();
   const product = onyItems.find((item) => item.id === id);
   const [quantite, setQuantite] = useState(1);
+
+  // Le hook doit être appelé inconditionnellement (règles des Hooks) : on
+  // calcule donc un titre différent selon que le produit existe ou non,
+  // avant le return anticipé ci-dessous.
+  usePageTitle(
+    product
+      ? {
+          title: formatProductName(product),
+          description: product.description,
+        }
+      : {
+          title: 'Produit introuvable',
+        }
+  );
 
   if (!product) {
     return (

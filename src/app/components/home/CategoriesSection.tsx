@@ -1,9 +1,13 @@
+import { useNavigate } from 'react-router-dom';
 import { CategoryCard } from '../CategoryCard';
 import { onyItems } from '../../../constants/ony_items';
 import { categoryOrder, categoryLabels, categoryPlaceholderImages } from '../../../constants/ony_products';
 
 export function CategoriesSection() {
+  const navigate = useNavigate();
+
   const categories = categoryOrder.map((cat) => ({
+    key: cat,
     title: categoryLabels[cat],
     image: categoryPlaceholderImages[cat],
   }));
@@ -21,8 +25,13 @@ export function CategoriesSection() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {categories.map((category, index) => (
-            <CategoryCard key={index} image={category.image} title={category.title} />
+          {categories.map((category) => (
+            <CategoryCard
+              key={category.key}
+              image={category.image}
+              title={category.title}
+              onClick={() => navigate(`/catalogue?categorie=${encodeURIComponent(category.key)}`)}
+            />
           ))}
         </div>
       </div>

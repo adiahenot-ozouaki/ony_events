@@ -5,8 +5,14 @@ import { CartSummary, type CartLine } from '../components/devis/CartSummary';
 import { useCart } from '../context/CartContext';
 import { onyItems } from '../../constants/ony_items';
 import { categoryLabels, formatProductName } from '../../constants/ony_products';
+import { usePageTitle } from '../../lib/usePageTitle';
 
 export function DevisPage() {
+  usePageTitle({
+    title: 'Votre devis',
+    description: 'Finalisez votre demande de devis pour la location de mobilier et équipements événementiels au Gabon.',
+  });
+
   const { items, totalPrice } = useCart();
 
   const lines: CartLine[] = items

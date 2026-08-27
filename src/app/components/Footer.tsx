@@ -9,6 +9,8 @@ const SOCIAL_LINKS = [
 ].filter((social) => social.href);
 
 export function Footer() {
+  const currentYear = new Date().getFullYear();
+
   return (
     <footer className="bg-[#0B0B0B] text-white">
       <div className="max-w-[1440px] mx-auto px-20 py-16">
@@ -25,7 +27,6 @@ export function Footer() {
           <div>
             <h4 className="mb-4">Navigation</h4>
             <div className="flex flex-col gap-2 text-sm">
-              {/* <a href="/#accueil" className="text-gray-400 hover:text-[var(--gold)] transition-colors">Accueil</a> */}
               <Link to="/catalogue" className="text-gray-400 hover:text-[var(--gold)] transition-colors">Catalogue</Link>
               <Link to="/galerie" className="text-gray-400 hover:text-[var(--gold)] transition-colors">Galerie</Link>
               <Link to="/a-propos" className="text-gray-400 hover:text-[var(--gold)] transition-colors">À propos</Link>
@@ -64,7 +65,7 @@ export function Footer() {
         </div>
 
         <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-gray-400 text-sm">© 2026 {agencyInfo.nom}. Tous droits réservés.</p>
+          <p className="text-gray-400 text-sm">© {currentYear} {agencyInfo.nom}. Tous droits réservés.</p>
           {SOCIAL_LINKS.length > 0 && (
             <div className="flex items-center gap-4">
               {SOCIAL_LINKS.map(({ key, href, Icon, label }) => (

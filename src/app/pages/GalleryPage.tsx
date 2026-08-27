@@ -6,8 +6,14 @@ import { GalleryFilters, type GalleryFilter } from '../components/gallery/Galler
 import { GalleryGrid } from '../components/gallery/GalleryGrid';
 import { Lightbox } from '../components/gallery/Lightbox';
 import { galleryImages } from '../../constants/gallery_images';
+import { usePageTitle } from '../../lib/usePageTitle';
 
 export function GalleryPage() {
+  usePageTitle({
+    title: 'Galerie',
+    description: 'Découvrez en images nos installations et réalisations : mariages, conférences et cérémonies équipés par ONY.',
+  });
+
   const [activeFilter, setActiveFilter] = useState<GalleryFilter>('Tous');
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 

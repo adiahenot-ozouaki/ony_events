@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'motion/react';
 import { CartProvider } from './context/CartContext';
 import { PageTransition } from './components/motion/PageTransition';
+import { PageLoader } from './components/PageLoader';
 
 // Chaque page est chargée à la demande (dynamic import) au lieu d'être
 // incluse dans le bundle initial. Le navigateur ne télécharge le code de
@@ -19,6 +20,9 @@ const AboutPage = lazy(() => import('./pages/AboutPage').then((m) => ({ default:
 const GalleryPage = lazy(() =>
   import('./pages/GalleryPage').then((m) => ({ default: m.GalleryPage }))
 );
+const NotFoundPage = lazy(() =>
+  import('./pages/NotFoundPage').then((m) => ({ default: m.NotFoundPage }))
+);
 
 function AnimatedRoutes() {
   const location = useLocation();
@@ -34,7 +38,10 @@ function AnimatedRoutes() {
 
   return (
     <AnimatePresence mode="wait">
-      <Suspense fallback={null}>
+      {/* PageLoader plutôt que fallback={null} : évite un écran blanc
+          silencieux le temps que le code de la route en lazy-loading soit
+          téléchargé (surtout sensible sur connexion lente). */}
+      <Suspense fallback={<PageLoader />}>
         <Routes location={location} key={location.pathname}>
           <Route path="/" element={<PageTransition><Home /></PageTransition>} />
           <Route path="/catalogue" element={<PageTransition><CataloguePage /></PageTransition>} />
@@ -42,6 +49,9 @@ function AnimatedRoutes() {
           <Route path="/devis" element={<PageTransition><DevisPage /></PageTransition>} />
           <Route path="/a-propos" element={<PageTransition><AboutPage /></PageTransition>} />
           <Route path="/galerie" element={<PageTransition><GalleryPage /></PageTransition>} />
+          {/* Doit rester en dernier : capture toute route non reconnue (fautes
+              de frappe, liens cassés, anciennes URLs) */}
+          <Route path="*" element={<PageTransition><NotFoundPage /></PageTransition>} />
         </Routes>
       </Suspense>
     </AnimatePresence>
