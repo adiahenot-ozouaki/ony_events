@@ -148,17 +148,17 @@ export function ProductDetailPage() {
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {relatedProducts.map((item) => (
-                <Link key={item.id} to={`/produit/${item.id}`} className="block">
-                  <ProductCard
-                    image={productImage(item)}
-                    name={formatProductName(item)}
-                    price={formatPrice(item.prix)}
-                    description={item.description}
-                    category={categoryLabels[item.categorie] ?? item.categorie}
-                    isVIP={isVIP(item)}
-                    onAddToCart={() => addItem(item.id, 1)}
-                  />
-                </Link>
+                <ProductCard
+                  key={item.id}
+                  to={`/produit/${item.id}`}
+                  image={productImage(item)}
+                  name={formatProductName(item)}
+                  price={formatPrice(item.prix)}
+                  description={item.description}
+                  category={categoryLabels[item.categorie] ?? item.categorie}
+                  isVIP={isVIP(item)}
+                  onAddToCart={() => addItem(item.id, 1)}
+                />
               ))}
             </div>
           </div>
