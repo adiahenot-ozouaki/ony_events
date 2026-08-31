@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom';
 import { AnimatePresence, motion } from 'motion/react';
 import { ProductCard } from '../ProductCard';
 import { useCart } from '../../context/CartContext';
@@ -32,17 +31,16 @@ export function ProductGrid({ items }: ProductGridProps) {
             exit={{ opacity: 0, scale: 0.92 }}
             transition={{ duration: 0.3, delay: index * 0.03 }}
           >
-            <Link to={`/produit/${item.id}`} className="block">
-              <ProductCard
-                image={productImage(item)}
-                name={formatProductName(item)}
-                price={formatPrice(item.prix)}
-                description={item.description}
-                category={categoryLabels[item.categorie] ?? item.categorie}
-                isVIP={isVIP(item)}
-                onAddToCart={() => addItem(item.id, 1)}
-              />
-            </Link>
+            <ProductCard
+              to={`/produit/${item.id}`}
+              image={productImage(item)}
+              name={formatProductName(item)}
+              price={formatPrice(item.prix)}
+              description={item.description}
+              category={categoryLabels[item.categorie] ?? item.categorie}
+              isVIP={isVIP(item)}
+              onAddToCart={() => addItem(item.id, 1)}
+            />
           </motion.div>
         ))}
       </AnimatePresence>
