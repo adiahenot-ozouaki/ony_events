@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
 import { Minus, Plus } from 'lucide-react';
+import { useQuantityInput } from './useQuantityInput';
 
 interface QuantityInputProps {
   value: number;
@@ -15,20 +15,7 @@ interface QuantityInputProps {
  * Entrée ; une valeur invalide revient à la dernière valeur correcte.
  */
 export function QuantityInput({ value, onChange, min = 1, size = 'md' }: QuantityInputProps) {
-  const [draft, setDraft] = useState(String(value));
-
-  useEffect(() => {
-    setDraft(String(value));
-  }, [value]);
-
-  function commit() {
-    const parsed = parseInt(draft, 10);
-    if (Number.isNaN(parsed) || parsed < min) {
-      setDraft(String(value));
-      return;
-    }
-    onChange(parsed);
-  }
+  const { draft, setDraft, commit } = useQuantityInput({ value, min, onChange });
 
   const isSmall = size === 'sm';
   const buttonPadding = isSmall ? 'p-2' : 'p-3';
