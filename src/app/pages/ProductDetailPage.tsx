@@ -8,8 +8,10 @@ import { QuantityInput } from '../components/QuantityInput';
 import { useProductDetail } from '../components/useProductDetail';
 import { useCart } from '../context/CartContext';
 import {
+  categoryLabels,
   formatProductName,
   formatPrice,
+  isVIP,
   productImage,
 } from '../../constants/ony_products';
 import { usePageTitle } from '../../lib/usePageTitle';
@@ -146,8 +148,8 @@ export function ProductDetailPage() {
                   name={formatProductName(item)}
                   price={formatPrice(item.prix)}
                   description={item.description}
-                  category={item.categorie}
-                  isVIP={item.categorie ? undefined : undefined}
+                  category={categoryLabels[item.categorie] ?? item.categorie}
+                  isVIP={isVIP(item)}
                   onAddToCart={() => addItem(item.id, 1)}
                 />
               ))}
