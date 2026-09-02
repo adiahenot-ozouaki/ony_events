@@ -5,13 +5,11 @@ import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { ProductCard } from '../components/ProductCard';
 import { QuantityInput } from '../components/QuantityInput';
+import { useProductDetail } from '../components/useProductDetail';
 import { useCart } from '../context/CartContext';
-import { onyItems } from '../../constants/ony_items';
 import {
-  categoryLabels,
   formatProductName,
   formatPrice,
-  isVIP,
   productImage,
 } from '../../constants/ony_products';
 import { usePageTitle } from '../../lib/usePageTitle';
@@ -20,7 +18,7 @@ export function ProductDetailPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { addItem } = useCart();
-  const product = onyItems.find((item) => item.id === id);
+  const { product, categoryLabel, vip, relatedProducts } = useProductDetail(id);
   const [quantite, setQuantite] = useState(1);
 
   // Le hook doit être appelé inconditionnellement (règles des Hooks) : on
@@ -58,13 +56,6 @@ export function ProductDetailPage() {
       </div>
     );
   }
-
-  const categoryLabel = categoryLabels[product.categorie] ?? product.categorie;
-  const vip = isVIP(product);
-
-  const relatedProducts = onyItems
-    .filter((item) => item.categorie === product.categorie && item.id !== product.id)
-    .slice(0, 3);
 
   return (
     <div className="min-h-screen bg-white">
@@ -155,8 +146,8 @@ export function ProductDetailPage() {
                   name={formatProductName(item)}
                   price={formatPrice(item.prix)}
                   description={item.description}
-                  category={categoryLabels[item.categorie] ?? item.categorie}
-                  isVIP={isVIP(item)}
+                  category={item.categorie}
+                  isVIP={item.categorie ? undefined : undefined}
                   onAddToCart={() => addItem(item.id, 1)}
                 />
               ))}
