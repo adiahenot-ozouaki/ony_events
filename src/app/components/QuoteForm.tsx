@@ -1,5 +1,5 @@
-import { useRef, useState, type FormEvent } from 'react';
 import { Send, CheckCircle2, AlertCircle } from 'lucide-react';
+import { useQuoteForm } from './useQuoteForm';
 
 export interface QuoteFormItem {
   id: string;
@@ -12,19 +12,9 @@ export interface QuoteFormItem {
 interface QuoteFormProps {
   title?: string;
   subtitle?: string;
-  // Contenu du panier, envoyé et stocké avec la demande (facultatif : le
-  // formulaire général de l'accueil n'en a pas besoin).
   items?: QuoteFormItem[];
   total?: number;
 }
-
-type Status = 'idle' | 'loading' | 'success' | 'error';
-
-// Délai minimum (ms) entre l'affichage du formulaire et sa soumission.
-// Un bot qui remplit et envoie un formulaire en quelques centaines de
-// millisecondes est très probablement automatisé — un humain met toujours
-// plus de temps à lire les champs et à taper.
-const MIN_SUBMIT_DELAY_MS = 2500;
 
 export function QuoteForm({
   title = 'Demander un devis',
@@ -32,74 +22,23 @@ export function QuoteForm({
   items = [],
   total = 0,
 }: QuoteFormProps) {
-  const [nom, setNom] = useState('');
-  const [telephone, setTelephone] = useState('');
-  const [email, setEmail] = useState('');
-  const [typeEvenement, setTypeEvenement] = useState('');
-  const [message, setMessage] = useState('');
-  // Honeypot : champ invisible pour un utilisateur humain (masqué en CSS,
-  // exclu de l'ordre de tabulation) mais visible dans le DOM pour les bots
-  // qui remplissent tous les champs d'un formulaire automatiquement. Un nom
-  // volontairement "plausible" (plutôt que "honeypot") pour ne pas être
-  // trivialement filtré par un bot un peu plus malin.
-  const [societeWeb, setSocieteWeb] = useState('');
-  const [status, setStatus] = useState<Status>('idle');
-  const mountedAtRef = useRef(Date.now());
-
-  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-
-    // Piège à bots déclenché : on affiche un succès comme si tout allait
-    // bien (pour ne pas indiquer au bot qu'il a été détecté) mais on
-    // n'envoie rien à Supabase.
-    const submittedTooFast = Date.now() - mountedAtRef.current < MIN_SUBMIT_DELAY_MS;
-    if (societeWeb.trim() !== '' || submittedTooFast) {
-      setStatus('success');
-      return;
-    }
-
-    setStatus('loading');
-
-    try {
-      // Import dynamique : le client Supabase (~215 kB) n'est téléchargé
-      // qu'au moment où quelqu'un soumet réellement le formulaire, au lieu
-      // d'être chargé d'office avec la page d'accueil (qui inclut ce
-      // formulaire) ou la page devis.
-      //
-      // Ce import() peut lui-même lever une exception si les variables
-      // d'environnement Supabase sont absentes (voir le garde-fou dans
-      // supabaseClient.ts) — d'où le try/catch englobant, pour ne pas
-      // laisser le bouton bloqué sur "Envoi en cours..." indéfiniment.
-      const { supabase } = await import('../../lib/supabaseClient');
-
-      const { error } = await supabase.from('devis_requests').insert({
-        nom,
-        telephone,
-        email,
-        type_evenement: typeEvenement || null,
-        message: message || null,
-        items,
-        total,
-      });
-
-      if (error) {
-        setStatus('error');
-        return;
-      }
-
-      setStatus('success');
-      setNom('');
-      setTelephone('');
-      setEmail('');
-      setTypeEvenement('');
-      setMessage('');
-    } catch {
-      // Config Supabase manquante, coupure réseau, ou toute autre erreur
-      // inattendue avant même l'appel à l'API : on retombe sur le même
-      // message d'erreur générique que pour un échec d'insertion.
-      setStatus('error');
-    }
-  }
+  const {
+    nom,
+    setNom,
+    telephone,
+    setTelephone,
+    email,
+    setEmail,
+    typeEvenement,
+    setTypeEvenement,
+    message,
+    setMessage,
+    societeWeb,
+    setSocieteWeb,
+    status,
+    handleSubmit,
+    reset,
+  } = useQuoteForm({ items, total });
 
   if (status === 'success') {
     return (
@@ -114,10 +53,7 @@ export function QuoteForm({
               Merci ! Nous avons bien reçu votre demande et nous vous recontactons rapidement.
             </p>
             <button
-              onClick={() => {
-                mountedAtRef.current = Date.now();
-                setStatus('idle');
-              }}
+              onClick={reset}
               className="mt-6 text-sm text-[var(--gold)] hover:underline"
             >
               Envoyer une nouvelle demande
@@ -140,9 +76,6 @@ export function QuoteForm({
           </div>
 
           <form onSubmit={handleSubmit} className="bg-white rounded-lg p-8 shadow-lg">
-            {/* Champ honeypot : invisible et inatteignable pour un humain
-                (hors écran, hors tabulation, ignoré des lecteurs d'écran),
-                mais rempli par la plupart des bots de spam génériques. */}
             <div
               aria-hidden="true"
               style={{
