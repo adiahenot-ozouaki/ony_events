@@ -1,26 +1,14 @@
-import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { ArrowLeft, Search } from 'lucide-react';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { usePageTitle } from '../../lib/usePageTitle';
+import { useRobotsMeta } from '../components/useRobotsMeta';
 
 export function NotFoundPage() {
   usePageTitle({ title: 'Page introuvable' });
-
-  // La meta "robots" est mise à "noindex" tant qu'on est sur cette page, et
-  // restaurée à "index, follow" au démontage (avant de quitter la page) —
-  // on ne veut pas que Google indexe une 404, mais on ne doit pas non plus
-  // laisser la valeur "noindex" polluer les autres pages de la SPA.
-  useEffect(() => {
-    const meta = document.querySelector('meta[name="robots"]');
-    const previous = meta?.getAttribute('content') ?? 'index, follow';
-    meta?.setAttribute('content', 'noindex, nofollow');
-    return () => {
-      meta?.setAttribute('content', previous);
-    };
-  }, []);
+  useRobotsMeta('noindex, nofollow');
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
