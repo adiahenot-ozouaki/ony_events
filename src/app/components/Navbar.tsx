@@ -1,48 +1,17 @@
-import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { AnimatePresence, motion } from 'motion/react';
 import { Menu, X, ShoppingBag } from 'lucide-react';
 import { useCart } from '../context/CartContext';
+import { useMobileMenu } from './useMobileMenu';
 
 export function Navbar() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { totalCount } = useCart();
-  const menuButtonRef = useRef<HTMLButtonElement>(null);
-  const firstMobileLinkRef = useRef<HTMLAnchorElement>(null);
-
-  // À l'ouverture, envoie le focus clavier directement sur le premier lien
-  // du menu — sans ça, un utilisateur au clavier devrait retraverser toute
-  // la barre de navigation pour atteindre un panneau pourtant déjà visible.
-  useEffect(() => {
-    if (isMenuOpen) {
-      firstMobileLinkRef.current?.focus();
-    }
-  }, [isMenuOpen]);
-
-  // Ferme le menu ET rend le focus au bouton hamburger — pertinent quand la
-  // fermeture ne s'accompagne pas d'une navigation (ex. touche Échap),
-  // contrairement au clic sur un lien qui fait déjà quitter la page.
-  function closeMenuAndRefocusButton() {
-    setIsMenuOpen(false);
-    menuButtonRef.current?.focus();
-  }
-
-  // Support standard des menus/panneaux : Échap referme et rend la main au
-  // bouton qui a ouvert le menu, sans quoi le focus resterait "perdu" dans
-  // un panneau désormais invisible.
-  useEffect(() => {
-    if (!isMenuOpen) return;
-
-    function handleKeyDown(e: KeyboardEvent) {
-      if (e.key === 'Escape') {
-        closeMenuAndRefocusButton();
-      }
-    }
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isMenuOpen]);
+  const {
+    isMenuOpen,
+    setIsMenuOpen,
+    menuButtonRef,
+    firstMobileLinkRef,
+  } = useMobileMenu();
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-border">
