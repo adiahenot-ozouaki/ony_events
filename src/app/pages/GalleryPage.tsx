@@ -1,12 +1,12 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'motion/react';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
-import { GalleryFilters, type GalleryFilter } from '../components/gallery/GalleryFilters';
+import { GalleryFilters } from '../components/gallery/GalleryFilters';
 import { GalleryGrid } from '../components/gallery/GalleryGrid';
 import { Lightbox } from '../components/gallery/Lightbox';
-import { galleryImages } from '../../constants/gallery_images';
 import { usePageTitle } from '../../lib/usePageTitle';
+import { useGalleryFilter } from '../components/gallery/useGalleryFilter';
 
 export function GalleryPage() {
   usePageTitle({
@@ -14,13 +14,8 @@ export function GalleryPage() {
     description: 'Découvrez en images nos installations et réalisations : mariages, conférences et cérémonies équipés par ONY.',
   });
 
-  const [activeFilter, setActiveFilter] = useState<GalleryFilter>('Tous');
+  const { activeFilter, setActiveFilter, filteredImages } = useGalleryFilter();
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
-
-  const filteredImages = useMemo(() => {
-    if (activeFilter === 'Tous') return galleryImages;
-    return galleryImages.filter((image) => image.categorie === activeFilter);
-  }, [activeFilter]);
 
   return (
     <div className="min-h-screen bg-white">
