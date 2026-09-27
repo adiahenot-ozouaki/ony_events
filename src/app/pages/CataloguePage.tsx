@@ -1,30 +1,15 @@
 import { motion } from 'motion/react';
-import { useEffect, useState } from 'react';
+import { motion } from 'motion/react';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { SearchBar } from '../components/catalogue/SearchBar';
 import { CategoryFilters } from '../components/catalogue/CategoryFilters';
 import { ProductGrid } from '../components/catalogue/ProductGrid';
 import { Pagination } from '../components/catalogue/Pagination';
-import { fetchProducts } from '../../lib/products';
 import { usePageTitle } from '../../lib/usePageTitle';
 import { useCatalogue } from '../components/catalogue/useCatalogue';
 
 export function CataloguePage() {
-  const [productCount, setProductCount] = useState(0);
-
-  useEffect(() => {
-    let cancelled = false;
-
-    fetchProducts().then((products) => {
-      if (!cancelled) setProductCount(products.length);
-    });
-
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
   usePageTitle({
     title: 'Catalogue',
     description: `Parcourez nos ${productCount} références de mobilier et équipements événementiels à louer : chaises, tables, tentes, couverts et prestations.`,
@@ -41,6 +26,7 @@ export function CataloguePage() {
     totalPages,
     rangeStart,
     rangeEnd,
+    productCount,
     handlePageChange,
     resultsRef,
   } = useCatalogue();
