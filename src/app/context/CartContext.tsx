@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 import type { OnyItem } from '../../constants/ony_interfaces';
 import { fetchProducts } from '../../lib/products';
+import { useCartStorage } from './useCartStorage';
 
 export interface CartItem {
   id: string;
@@ -19,26 +20,8 @@ interface CartContextValue {
 
 const CartContext = createContext<CartContextValue | undefined>(undefined);
 
-const STORAGE_KEY = 'ony_cart';
-
-function readStoredCart(): CartItem[] {
-  if (typeof window === 'undefined') return [];
-  try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
-    if (!raw) return [];
-    const parsed = JSON.parse(raw);
-    if (!Array.isArray(parsed)) return [];
-    return parsed.filter(
-      (entry): entry is CartItem =>
-        entry && typeof entry.id === 'string' && typeof entry.quantite === 'number'
-    );
-  } catch {
-    return [];
-  }
-}
-
 export function CartProvider({ children }: { children: ReactNode }) {
-  const [items, setItems] = useState<CartItem[]>(() => readStoredCart());
+  const [items, setItems] = useCartStorage();
   const [products, setProducts] = useState<OnyItem[]>([]);
 
   useEffect(() => {
@@ -52,14 +35,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
       cancelled = true;
     };
   }, []);
-
-  useEffect(() => {
-    try {
-      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
-    } catch {
-      // stockage indisponible (navigation privée, quota...) - on ignore silencieusement
-    }
-  }, [items]);
 
   function addItem(id: string, quantite = 1) {
     setItems((prev) => {
