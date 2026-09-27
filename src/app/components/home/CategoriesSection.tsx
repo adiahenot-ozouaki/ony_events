@@ -1,10 +1,24 @@
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CategoryCard } from '../CategoryCard';
-import { onyItems } from '../../../constants/ony_items';
+import { fetchProducts } from '../../../lib/products';
 import { categoryOrder, categoryLabels, categoryPlaceholderImages } from '../../../constants/ony_products';
 
 export function CategoriesSection() {
   const navigate = useNavigate();
+  const [productCount, setProductCount] = useState(0);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    fetchProducts().then((products) => {
+      if (!cancelled) setProductCount(products.length);
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const categories = categoryOrder.map((cat) => ({
     key: cat,
@@ -20,7 +34,7 @@ export function CategoriesSection() {
             Nos catégories
           </h2>
           <p className="text-muted-foreground text-lg">
-            {onyItems.length} références réparties en {categoryOrder.length} catégories
+            {productCount} références réparties en {categoryOrder.length} catégories
           </p>
         </div>
 
