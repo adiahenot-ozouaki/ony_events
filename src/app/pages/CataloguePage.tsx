@@ -1,18 +1,33 @@
 import { motion } from 'motion/react';
+import { useEffect, useState } from 'react';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { SearchBar } from '../components/catalogue/SearchBar';
 import { CategoryFilters } from '../components/catalogue/CategoryFilters';
 import { ProductGrid } from '../components/catalogue/ProductGrid';
 import { Pagination } from '../components/catalogue/Pagination';
-import { onyItems } from '../../constants/ony_items';
+import { fetchProducts } from '../../lib/products';
 import { usePageTitle } from '../../lib/usePageTitle';
 import { useCatalogue } from '../components/catalogue/useCatalogue';
 
 export function CataloguePage() {
+  const [productCount, setProductCount] = useState(0);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    fetchProducts().then((products) => {
+      if (!cancelled) setProductCount(products.length);
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   usePageTitle({
     title: 'Catalogue',
-    description: `Parcourez nos ${onyItems.length} références de mobilier et équipements événementiels à louer : chaises, tables, tentes, couverts et prestations.`,
+    description: `Parcourez nos ${productCount} références de mobilier et équipements événementiels à louer : chaises, tables, tentes, couverts et prestations.`,
   });
 
   const {
@@ -64,7 +79,7 @@ export function CataloguePage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.25, ease: 'easeOut' }}
           >
-            {onyItems.length} références disponibles à la location
+            {productCount} références disponibles à la location
           </motion.p>
           <br />
           <SearchBar value={search} onChange={setSearch} />
