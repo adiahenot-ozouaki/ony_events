@@ -84,6 +84,13 @@ export function useCatalogue() {
   const rangeStart = filteredItems.length === 0 ? 0 : (page - 1) * PAGE_SIZE + 1;
   const rangeEnd = Math.min(page * PAGE_SIZE, filteredItems.length);
 
+  const categoryCounts = Object.fromEntries(
+    catalogueFilters.map((filter) => [
+      filter,
+      filter === 'Tous' ? products.length : products.filter((item) => item.categorie === filter).length,
+    ])
+  ) as Record<CatalogueFilter, number>;
+
   function handlePageChange(newPage: number) {
     setPage(newPage);
     resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -103,6 +110,7 @@ export function useCatalogue() {
     rangeStart,
     rangeEnd,
     productCount: products.length,
+    categoryCounts,
     handlePageChange,
     resultsRef,
   };
