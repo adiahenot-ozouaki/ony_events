@@ -1,10 +1,12 @@
+import { useEffect, useState } from 'react';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { QuoteForm, type QuoteFormItem } from '../components/QuoteForm';
 import { CartSummary, type CartLine } from '../components/devis/CartSummary';
 import { useCart } from '../context/CartContext';
-import { onyItems } from '../../constants/ony_items';
+import type { OnyItem } from '../../constants/ony_interfaces';
 import { categoryLabels, formatProductName } from '../../constants/ony_products';
+import { fetchProducts } from '../../lib/products';
 import { usePageTitle } from '../../lib/usePageTitle';
 
 export function DevisPage() {
@@ -14,10 +16,27 @@ export function DevisPage() {
   });
 
   const { items, totalPrice } = useCart();
+  const [products, setProducts] = useState<OnyItem[]>([]);
+
+  useEffect(() => {
+    let active = true;
+
+    fetchProducts()
+      .then((loadedProducts) => {
+        if (active) setProducts(loadedProducts);
+      })
+      .catch(() => {
+        if (active) setProducts([]);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, []);
 
   const lines: CartLine[] = items
     .map((cartItem) => {
-      const product = onyItems.find((p) => p.id === cartItem.id);
+      const product = products.find((p) => p.id === cartItem.id);
       if (!product) return null;
       return { product, quantite: cartItem.quantite };
     })
