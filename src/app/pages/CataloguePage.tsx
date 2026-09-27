@@ -16,6 +16,8 @@ export function CataloguePage() {
     handleFilterChange,
     paginatedItems,
     filteredItems,
+    isLoading,
+    error,
     page,
     totalPages,
     rangeStart,
@@ -79,15 +81,27 @@ export function CataloguePage() {
 
       <section ref={resultsRef} className="py-16 bg-white scroll-mt-24">
         <div className="max-w-[1440px] mx-auto px-20">
-          <p className="text-sm text-muted-foreground mb-6">
-            {filteredItems.length === 0
-              ? 'Aucun résultat'
-              : `Affichage ${rangeStart}-${rangeEnd} sur ${filteredItems.length} résultat${filteredItems.length > 1 ? 's' : ''}`}
-          </p>
+          {isLoading ? (
+            <p className="text-center text-muted-foreground py-24" role="status">
+              Chargement du catalogue…
+            </p>
+          ) : error ? (
+            <p className="text-center text-red-600 py-24" role="alert">
+              {error}
+            </p>
+          ) : (
+            <>
+              <p className="text-sm text-muted-foreground mb-6">
+                {filteredItems.length === 0
+                  ? 'Aucun résultat'
+                  : `Affichage ${rangeStart}-${rangeEnd} sur ${filteredItems.length} résultat${filteredItems.length > 1 ? 's' : ''}`}
+              </p>
 
-          <ProductGrid items={paginatedItems} />
+              <ProductGrid items={paginatedItems} />
 
-          <Pagination page={page} totalPages={totalPages} onChange={handlePageChange} />
+              <Pagination page={page} totalPages={totalPages} onChange={handlePageChange} />
+            </>
+          )}
         </div>
       </section>
 
