@@ -1,16 +1,35 @@
+import { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
 import { Reveal } from '../motion/Reveal';
 import { agencyInfo } from '../../../constants/agency_info';
-import { onyItems } from '../../../constants/ony_items';
 import { categoryOrder } from '../../../constants/ony_products';
-
-const STATS = [
-  { value: `${onyItems.length}+`, label: 'références au catalogue' },
-  { value: `${categoryOrder.length}`, label: "catégories d'équipements" },
-  { value: '100%', label: 'sur mesure' },
-];
+import { fetchProducts } from '../../../lib/products';
 
 export function AboutIntro() {
+  const [productCount, setProductCount] = useState(0);
+
+  useEffect(() => {
+    let active = true;
+
+    fetchProducts()
+      .then((products) => {
+        if (active) setProductCount(products.length);
+      })
+      .catch(() => {
+        if (active) setProductCount(0);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const stats = [
+    { value: `${productCount}+`, label: 'références au catalogue' },
+    { value: `${categoryOrder.length}`, label: "catégories d'équipements" },
+    { value: '100%', label: 'sur mesure' },
+  ];
+
   return (
     <section className="py-24 bg-white">
       <div className="max-w-[1440px] mx-auto px-20">
@@ -45,7 +64,7 @@ export function AboutIntro() {
 
         <Reveal>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 rounded-lg bg-[var(--secondary)] py-10 px-6 text-center">
-            {STATS.map((stat) => (
+            {stats.map((stat) => (
               <div key={stat.label}>
                 <div
                   className="font-[var(--font-serif)] text-4xl text-[var(--gold)] mb-1"
