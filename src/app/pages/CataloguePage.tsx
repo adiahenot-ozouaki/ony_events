@@ -21,6 +21,7 @@ export function CataloguePage() {
     rangeStart,
     rangeEnd,
     productCount,
+    categoryCounts,
     handlePageChange,
     resultsRef,
   } = useCatalogue();
@@ -68,7 +69,11 @@ export function CataloguePage() {
           </motion.p>
           <br />
           <SearchBar value={search} onChange={setSearch} />
-          <CategoryFilters activeFilter={activeFilter} onChange={handleFilterChange} />
+          <CategoryFilters
+            activeFilter={activeFilter}
+            onChange={handleFilterChange}
+            categoryCounts={categoryCounts}
+          />
         </div>
       </section>
 
