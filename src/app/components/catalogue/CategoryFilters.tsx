@@ -1,7 +1,5 @@
-import { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
 import { categoryOrder, categoryLabels } from '../../../constants/ony_products';
-import { fetchProducts } from '../../../lib/products';
 
 export const catalogueFilters = ['Tous', ...categoryOrder] as const;
 export type CatalogueFilter = (typeof catalogueFilters)[number];
@@ -9,31 +7,15 @@ export type CatalogueFilter = (typeof catalogueFilters)[number];
 interface CategoryFiltersProps {
   activeFilter: CatalogueFilter;
   onChange: (filter: CatalogueFilter) => void;
+  categoryCounts: Record<CatalogueFilter, number>;
 }
 
-export function CategoryFilters({ activeFilter, onChange }: CategoryFiltersProps) {
-  const [products, setProducts] = useState<Awaited<ReturnType<typeof fetchProducts>>>([]);
-
-  useEffect(() => {
-    let cancelled = false;
-
-    fetchProducts().then((products) => {
-      if (!cancelled) setProducts(products);
-    });
-
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
+export function CategoryFilters({ activeFilter, onChange, categoryCounts }: CategoryFiltersProps) {
   return (
     <div className="flex flex-wrap justify-center gap-3">
       {catalogueFilters.map((filter) => {
         const isActive = activeFilter === filter;
-        const count =
-          filter === 'Tous'
-            ? products.length
-            : products.filter((item) => item.categorie === filter).length;
+        const count = categoryCounts[filter];
         const label = filter === 'Tous' ? 'Tous' : categoryLabels[filter];
         return (
           <motion.button
