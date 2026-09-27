@@ -1,6 +1,7 @@
+import { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
-import { onyItems } from '../../../constants/ony_items';
-import { categoryOrder, categoryLabels, categoryCount } from '../../../constants/ony_products';
+import { categoryOrder, categoryLabels } from '../../../constants/ony_products';
+import { fetchProducts } from '../../../lib/products';
 
 export const catalogueFilters = ['Tous', ...categoryOrder] as const;
 export type CatalogueFilter = (typeof catalogueFilters)[number];
@@ -11,11 +12,28 @@ interface CategoryFiltersProps {
 }
 
 export function CategoryFilters({ activeFilter, onChange }: CategoryFiltersProps) {
+  const [productCount, setProductCount] = useState(0);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    fetchProducts().then((products) => {
+      if (!cancelled) setProductCount(products.length);
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   return (
     <div className="flex flex-wrap justify-center gap-3">
       {catalogueFilters.map((filter) => {
         const isActive = activeFilter === filter;
-        const count = filter === 'Tous' ? onyItems.length : categoryCount(filter);
+        const count =
+          filter === 'Tous'
+            ? productCount
+            : undefined;
         const label = filter === 'Tous' ? 'Tous' : categoryLabels[filter];
         return (
           <motion.button
@@ -29,7 +47,10 @@ export function CategoryFilters({ activeFilter, onChange }: CategoryFiltersProps
                 : 'bg-white text-foreground border border-border hover:border-[var(--gold)]'
             }`}
           >
-            {label} <span className={isActive ? 'text-white/80' : 'text-muted-foreground'}>({count})</span>
+            {label}{' '}
+            <span className={isActive ? 'text-white/80' : 'text-muted-foreground'}>
+              ({count ?? 0})
+            </span>
           </motion.button>
         );
       })}
