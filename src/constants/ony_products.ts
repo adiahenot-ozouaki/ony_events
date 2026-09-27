@@ -1,4 +1,3 @@
-import { onyItems } from './ony_items';
 import type { OnyItem } from './ony_interfaces';
 import { availableProductImages } from './product_images';
 
@@ -58,20 +57,4 @@ export function productImages(item: OnyItem): string[] {
   return item.image
     .filter((filename) => availableProductImages.has(filename))
     .map((filename) => `/images/${filename}.jpg`);
-}
-
-export function categoryCount(cat: string) {
-  return onyItems.filter((item) => item.categorie === cat).length;
-}
-
-// Catégories mises en avant sur la page d'accueil (aperçu, pas le catalogue entier).
-const featuredCategoryOrder = ['Chaise', 'Couvert', 'Habillage', 'Table', 'Tente', 'Service'] as const;
-
-export function pickFeaturedProducts(): OnyItem[] {
-  return featuredCategoryOrder
-    .map((cat) => {
-      const items = onyItems.filter((item) => item.categorie === cat);
-      return items.find(isVIP) ?? items[0];
-    })
-    .filter((item): item is OnyItem => Boolean(item));
 }
