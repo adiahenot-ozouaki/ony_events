@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
-import { onyItems } from '../../constants/ony_items';
+import type { OnyItem } from '../../constants/ony_interfaces';
+import { fetchProducts } from '../../lib/products';
 
 export interface CartItem {
   id: string;
@@ -38,6 +39,19 @@ function readStoredCart(): CartItem[] {
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>(() => readStoredCart());
+  const [products, setProducts] = useState<OnyItem[]>([]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    fetchProducts().then((fetchedProducts) => {
+      if (!cancelled) setProducts(fetchedProducts);
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     try {
@@ -79,13 +93,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
     let count = 0;
     let price = 0;
     for (const cartItem of items) {
-      const product = onyItems.find((p) => p.id === cartItem.id);
+      const product = products.find((p) => p.id === cartItem.id);
       if (!product) continue;
       count += cartItem.quantite;
       price += product.prix * cartItem.quantite;
     }
     return { totalCount: count, totalPrice: price };
-  }, [items]);
+  }, [items, products]);
 
   const value: CartContextValue = {
     items,
