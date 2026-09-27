@@ -12,13 +12,13 @@ interface CategoryFiltersProps {
 }
 
 export function CategoryFilters({ activeFilter, onChange }: CategoryFiltersProps) {
-  const [productCount, setProductCount] = useState(0);
+  const [products, setProducts] = useState<Awaited<ReturnType<typeof fetchProducts>>>([]);
 
   useEffect(() => {
     let cancelled = false;
 
     fetchProducts().then((products) => {
-      if (!cancelled) setProductCount(products.length);
+      if (!cancelled) setProducts(products);
     });
 
     return () => {
@@ -32,8 +32,8 @@ export function CategoryFilters({ activeFilter, onChange }: CategoryFiltersProps
         const isActive = activeFilter === filter;
         const count =
           filter === 'Tous'
-            ? productCount
-            : undefined;
+            ? products.length
+            : products.filter((item) => item.categorie === filter).length;
         const label = filter === 'Tous' ? 'Tous' : categoryLabels[filter];
         return (
           <motion.button
@@ -49,7 +49,7 @@ export function CategoryFilters({ activeFilter, onChange }: CategoryFiltersProps
           >
             {label}{' '}
             <span className={isActive ? 'text-white/80' : 'text-muted-foreground'}>
-              ({count ?? 0})
+              ({count})
             </span>
           </motion.button>
         );
