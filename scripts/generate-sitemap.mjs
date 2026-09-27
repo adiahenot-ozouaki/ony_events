@@ -1,14 +1,15 @@
 // Régénère public/sitemap.xml avant chaque build : pages fixes du site +
-// une entrée par produit du catalogue (src/constants/ony_items.ts).
+// une entrée par produit du catalogue.
 //
-// Utilise directement l'API interne de Vite (déjà une dépendance du projet)
-// pour charger ony_items.ts tel quel, sans avoir besoin d'ajouter ts-node,
-// tsx ou un autre outil pour exécuter du TypeScript en dehors de Vite.
+// Les IDs produits viennent de Supabase, qui est désormais la source de
+// vérité du catalogue. Le script ne récupère que les données nécessaires
+// au sitemap.
 //
 // Branché automatiquement via le hook npm "prebuild" dans package.json :
 // `npm run build` l'exécute donc toujours avant `vite build`.
 
-import { createServer } from 'vite';
+import { createClient } from '@supabase/supabase-js';
+import { loadEnv } from 'vite';
 import { writeFileSync } from 'node:fs';
 import path from 'node:path';
 
@@ -37,30 +38,30 @@ function buildXml(urls) {
 }
 
 async function main() {
-  // middlewareMode + appType 'custom' : on ne démarre pas de vrai serveur
-  // HTTP, on veut juste la capacité de Vite à transformer/charger un
-  // fichier .ts comme le ferait le navigateur en dev.
-  const server = await createServer({
-    server: { middlewareMode: true },
-    appType: 'custom',
-    logLevel: 'error',
-  });
+  const env = loadEnv('production', process.cwd(), '');
 
-  let onyItems;
-  try {
-    ({ onyItems } = await server.ssrLoadModule('/src/constants/ony_items.ts'));
-  } finally {
-    await server.close();
-  }
+  const supabaseUrl = env.VITE_SUPABASE_URL;
+  const supabaseKey = env.VITE_SUPABASE_PUBLISHABLE_KEY;
 
-  if (!Array.isArray(onyItems)) {
+  if (!supabaseUrl || !supabaseKey) {
     throw new Error(
-      "ony_items.ts n'exporte pas 'onyItems' comme un tableau — vérifie que l'export nommé n'a pas changé de nom."
+      'Variables d\'environnement Supabase manquantes : VITE_SUPABASE_URL et VITE_SUPABASE_PUBLISHABLE_KEY doivent être définies.'
     );
   }
 
-  const productUrls = onyItems.map((item) => ({
-    loc: `/produit/${item.id}`,
+  const supabase = createClient(supabaseUrl, supabaseKey);
+
+  const { data: products, error } = await supabase
+    .from('products')
+    .select('id')
+    .order('id');
+
+  if (error) {
+    throw new Error(`Impossible de récupérer les produits pour le sitemap : ${error.message}`);
+  }
+
+  const productUrls = (products ?? []).map((product) => ({
+    loc: `/produit/${product.id}`,
     changefreq: 'monthly',
     priority: '0.7',
   }));
