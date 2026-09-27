@@ -1,3 +1,4 @@
+import { onyItems } from './ony_items';
 import type { OnyItem } from './ony_interfaces';
 import { availableProductImages } from './product_images';
 
@@ -27,7 +28,7 @@ export const categoryPlaceholderImages: Record<string, string> = {
 };
 
 export function categoryCount(cat: string) {
-  return 0;
+  return onyItems.filter((item) => item.categorie === cat).length;
 }
 
 export function capitalize(value: string) {
