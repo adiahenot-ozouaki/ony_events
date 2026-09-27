@@ -1,7 +1,7 @@
 // Liste des fichiers présents dans public/images/ (sans l'extension).
-// Sert à vérifier qu'un identifiant référencé dans ony_items.ts correspond
-// bien à une photo existante avant de l'utiliser — évite les images cassées
-// si un identifiant est mal orthographié ou que le fichier n'a pas encore
+// Sert à vérifier qu'un identifiant du champ `image` des produits Supabase
+// correspond bien à une photo existante avant de l'utiliser — évite les images
+// cassées si un identifiant est mal orthographié ou si le fichier n'a pas encore
 // été fourni.
 export const availableProductImages = new Set<string>([
   'accessoire_1', 'accessoire_2', 'accessoire_3', 'accessoire_4', 'accessoire_5', 'accessoire_6', 'accessoire_7', 'accessoire_8',
