@@ -1,28 +1,11 @@
-import { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
 import { Reveal } from '../motion/Reveal';
+import { useProductCount } from '../useProductCount';
 import { agencyInfo } from '../../../constants/agency_info';
 import { categoryOrder } from '../../../constants/ony_products';
-import { fetchProducts } from '../../../lib/products';
 
 export function AboutIntro() {
-  const [productCount, setProductCount] = useState(0);
-
-  useEffect(() => {
-    let active = true;
-
-    fetchProducts()
-      .then((products) => {
-        if (active) setProductCount(products.length);
-      })
-      .catch(() => {
-        if (active) setProductCount(0);
-      });
-
-    return () => {
-      active = false;
-    };
-  }, []);
+  const productCount = useProductCount();
 
   const stats = [
     { value: `${productCount}+`, label: 'références au catalogue' },
