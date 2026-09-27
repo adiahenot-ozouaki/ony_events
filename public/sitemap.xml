@@ -26,7 +26,22 @@
     <priority>0.4</priority>
   </url>
   <url>
+    <loc>https://ony.ga/produit/chaise_fauteuil_marie</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ony.ga/produit/chaise_fauteuil_simple</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://ony.ga/produit/chaise_plastique</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ony.ga/produit/chaise_pupitre_conference</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -41,32 +56,7 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://ony.ga/produit/chaise_pupitre_conference</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://ony.ga/produit/chaise_fauteuil_simple</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://ony.ga/produit/chaise_fauteuil_marie</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
     <loc>https://ony.ga/produit/couvert_assiette_aperitif</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://ony.ga/produit/couvert_simple_sch_m_112</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://ony.ga/produit/couvert_simple_c_s_i_112</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -76,32 +66,22 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://ony.ga/produit/couvert_classic_cch_m_223</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
     <loc>https://ony.ga/produit/couvert_chic_cl_c_223</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://ony.ga/produit/couvert_ultra_uch_m_233</loc>
+    <loc>https://ony.ga/produit/couvert_classic_cch_m_223</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ony.ga/produit/couvert_divers_verres_apero</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://ony.ga/produit/couvert_elite_el_c_233</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://ony.ga/produit/couvert_vip_vch_m_333</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://ony.ga/produit/couvert_vip_vl_c_333</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -126,22 +106,67 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://ony.ga/produit/couvert_simple_c_s_i_112</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ony.ga/produit/couvert_simple_sch_m_112</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://ony.ga/produit/couvert_tasse_universelle</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://ony.ga/produit/couvert_divers_verres_apero</loc>
+    <loc>https://ony.ga/produit/couvert_ultra_uch_m_233</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://ony.ga/produit/habillage_chaise_noeud_bandeau</loc>
+    <loc>https://ony.ga/produit/couvert_vip_vch_m_333</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://ony.ga/produit/habillage_chaise_noeud_ruban</loc>
+    <loc>https://ony.ga/produit/couvert_vip_vl_c_333</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ony.ga/produit/habillage_buffet_gm_blanc</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ony.ga/produit/habillage_buffet_gm_impression</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ony.ga/produit/habillage_buffet_mm_blanc</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ony.ga/produit/habillage_buffet_mm_impression</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ony.ga/produit/habillage_buffet_pm_gateau_nid_blanc</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ony.ga/produit/habillage_buffet_pm_gateau_nid_impression</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ony.ga/produit/habillage_buffet_table_honneur_blanc</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -156,57 +181,12 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://ony.ga/produit/habillage_nappe_simple_r10</loc>
+    <loc>https://ony.ga/produit/habillage_chaise_noeud_bandeau</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://ony.ga/produit/habillage_nappe_impression_r8</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://ony.ga/produit/habillage_nappe_impression_r10</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://ony.ga/produit/habillage_nappe_surnappe</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://ony.ga/produit/habillage_buffet_pm_gateau_nid_impression</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://ony.ga/produit/habillage_buffet_pm_gateau_nid_blanc</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://ony.ga/produit/habillage_buffet_mm_impression</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://ony.ga/produit/habillage_buffet_mm_blanc</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://ony.ga/produit/habillage_buffet_gm_impression</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://ony.ga/produit/habillage_buffet_gm_blanc</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://ony.ga/produit/habillage_buffet_table_honneur_blanc</loc>
+    <loc>https://ony.ga/produit/habillage_chaise_noeud_ruban</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -216,7 +196,27 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://ony.ga/produit/plateau_chaffing_dish_complet_rond</loc>
+    <loc>https://ony.ga/produit/habillage_nappe_impression_r10</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ony.ga/produit/habillage_nappe_impression_r8</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ony.ga/produit/habillage_nappe_simple_r10</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ony.ga/produit/habillage_nappe_surnappe</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ony.ga/produit/plateau_accessoires</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -231,12 +231,17 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://ony.ga/produit/plateau_grille_support_cocktail_dish</loc>
+    <loc>https://ony.ga/produit/plateau_chaffing_dish_complet_rond</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://ony.ga/produit/plateau_dish</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ony.ga/produit/plateau_grille_support_cocktail_dish</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -261,71 +266,6 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://ony.ga/produit/plateau_accessoires</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://ony.ga/produit/table_desserte_a_gateaux</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://ony.ga/produit/table_demi_lune</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://ony.ga/produit/table_ronde_r8</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://ony.ga/produit/table_ronde_r10_nude</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://ony.ga/produit/table_ronde_r10_stratifiee</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://ony.ga/produit/table_tretaux_pm</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://ony.ga/produit/table_tretaux_gm</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://ony.ga/produit/tente_ordinaire_6_metres_60_places</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://ony.ga/produit/tente_ordinaire_8_metres_80_places</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://ony.ga/produit/tente_ordinaire_12_metres_150_places</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://ony.ga/produit/tente_special_10m</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://ony.ga/produit/tente_special_15m</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
     <loc>https://ony.ga/produit/service_animation_culturelle</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
@@ -336,27 +276,32 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://ony.ga/produit/service_decoration_espace_mariage_coutumier</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
     <loc>https://ony.ga/produit/service_decoration_espace_mariage_civil</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://ony.ga/produit/service_vehicules_des_maries</loc>
+    <loc>https://ony.ga/produit/service_decoration_espace_mariage_coutumier</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ony.ga/produit/service_media_photo</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ony.ga/produit/service_media_sonorisation</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ony.ga/produit/service_media_video</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://ony.ga/produit/service_personnel_hotesse</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://ony.ga/produit/service_personnel_steward</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -371,17 +316,72 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://ony.ga/produit/service_media_photo</loc>
+    <loc>https://ony.ga/produit/service_personnel_steward</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://ony.ga/produit/service_media_video</loc>
+    <loc>https://ony.ga/produit/service_vehicules_des_maries</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://ony.ga/produit/service_media_sonorisation</loc>
+    <loc>https://ony.ga/produit/table_demi_lune</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ony.ga/produit/table_desserte_a_gateaux</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ony.ga/produit/table_ronde_r10_nude</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ony.ga/produit/table_ronde_r10_stratifiee</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ony.ga/produit/table_ronde_r8</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ony.ga/produit/table_tretaux_gm</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ony.ga/produit/table_tretaux_pm</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ony.ga/produit/tente_ordinaire_12_metres_150_places</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ony.ga/produit/tente_ordinaire_6_metres_60_places</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ony.ga/produit/tente_ordinaire_8_metres_80_places</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ony.ga/produit/tente_special_10m</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ony.ga/produit/tente_special_15m</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
