@@ -27,9 +27,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     let cancelled = false;
 
-    fetchProducts().then((fetchedProducts) => {
-      if (!cancelled) setProducts(fetchedProducts);
-    });
+    fetchProducts()
+      .then((fetchedProducts) => {
+        if (!cancelled) setProducts(fetchedProducts);
+      })
+      .catch(() => {
+        if (!cancelled) setProducts([]);
+      });
 
     return () => {
       cancelled = true;
