@@ -1,5 +1,6 @@
 import { Send, CheckCircle2, AlertCircle } from 'lucide-react';
 import { useQuoteForm } from './useQuoteForm';
+import { agencyInfo } from '../../constants/agency_info';
 
 export interface QuoteFormItem {
   id: string;
@@ -166,7 +167,7 @@ export function QuoteForm({
               <div className="mb-6 flex items-start gap-2 text-sm text-destructive">
                 <AlertCircle size={18} className="flex-shrink-0 mt-0.5" />
                 <span>
-                  L'envoi a échoué. Réessayez, ou contactez-nous directement à contact@ony.fr.
+                  L'envoi a échoué. Réessayez, ou contactez-nous directement à {agencyInfo.email}.
                 </span>
               </div>
             )}
