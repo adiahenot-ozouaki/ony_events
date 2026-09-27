@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { fetchProducts } from '../../../lib/products';
+import { fetchProducts } from '../../lib/products';
 
 export function useProductCount() {
   const [productCount, setProductCount] = useState(0);
