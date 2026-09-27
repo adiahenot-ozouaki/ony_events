@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { onyItems } from '../../../constants/ony_items';
+import type { OnyItem } from '../../../constants/ony_interfaces';
+import { fetchProducts } from '../../../lib/products';
 import { catalogueFilters, type CatalogueFilter } from './CategoryFilters';
 
 const PAGE_SIZE = 15;
@@ -20,8 +21,35 @@ export function useCatalogue() {
     parseFilterFromParams(searchParams.get('categorie'))
   );
   const [search, setSearch] = useState('');
+  const [products, setProducts] = useState<OnyItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(1);
   const resultsRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadProducts() {
+      try {
+        setIsLoading(true);
+        setError(null);
+        const data = await fetchProducts();
+        if (!cancelled) setProducts(data);
+      } catch (loadError) {
+        if (!cancelled) {
+          setError(loadError instanceof Error ? loadError.message : 'Impossible de charger les produits.');
+        }
+      } finally {
+        if (!cancelled) setIsLoading(false);
+      }
+    }
+
+    loadProducts();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   // Garde le filtre synchronisé avec l'URL (permet de partager/rafraîchir un
   // lien filtré, ex. venant de la page d'accueil).
@@ -37,14 +65,14 @@ export function useCatalogue() {
 
   const filteredItems = useMemo(() => {
     const query = search.trim().toLowerCase();
-    return onyItems.filter((item) => {
+    return products.filter((item) => {
       const matchesCategory = activeFilter === 'Tous' || item.categorie === activeFilter;
       if (!matchesCategory) return false;
       if (!query) return true;
       const haystack = `${item.categorie} ${item.subCategorie} ${item.nom} ${item.description}`.toLowerCase();
       return haystack.includes(query);
     });
-  }, [activeFilter, search]);
+  }, [activeFilter, search, products]);
 
   // Revenir à la première page à chaque changement de filtre ou de recherche.
   useEffect(() => {
@@ -63,6 +91,8 @@ export function useCatalogue() {
 
   return {
     search,
+    isLoading,
+    error,
     setSearch,
     activeFilter,
     handleFilterChange,
