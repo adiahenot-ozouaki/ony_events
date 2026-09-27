@@ -102,6 +102,7 @@ export function useCatalogue() {
     totalPages,
     rangeStart,
     rangeEnd,
+    productCount: products.length,
     handlePageChange,
     resultsRef,
   };
