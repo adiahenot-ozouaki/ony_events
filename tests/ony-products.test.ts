@@ -1,5 +1,4 @@
-import test from 'node:test';
-import assert from 'node:assert/strict';
+import { describe, expect, it } from 'vitest';
 import {
   capitalize,
   isVIP,
@@ -7,7 +6,7 @@ import {
   formatPrice,
   productImage,
   productImages,
-} from '../src/constants/ony_products.ts';
+} from '../src/constants/ony_products';
 
 const baseProduct = {
   id: 'test-1',
@@ -21,59 +20,60 @@ const baseProduct = {
   unite: 'piece' as const,
 };
 
-test('capitalize met la première lettre en majuscule', () => {
-  assert.equal(capitalize('napoleon'), 'Napoleon');
-  assert.equal(capitalize(''), '');
-});
+describe('ony_products', () => {
+  it('capitalize met la première lettre en majuscule', () => {
+    expect(capitalize('napoleon')).toBe('Napoleon');
+    expect(capitalize('')).toBe('');
+  });
 
-test('isVIP détecte VIP dans la sous-catégorie ou le nom', () => {
-  assert.equal(isVIP({ ...baseProduct, subCategorie: 'VIP' }), true);
-  assert.equal(isVIP({ ...baseProduct, subCategorie: 'standard', nom: 'Fauteuil VIP' }), true);
-  assert.equal(isVIP(baseProduct), false);
-});
+  it('isVIP détecte VIP dans la sous-catégorie ou le nom', () => {
+    expect(isVIP({ ...baseProduct, subCategorie: 'VIP' })).toBe(true);
+    expect(isVIP({ ...baseProduct, subCategorie: 'standard', nom: 'Fauteuil VIP' })).toBe(true);
+    expect(isVIP(baseProduct)).toBe(false);
+  });
 
-test('formatProductName construit le nom à partir de la sous-catégorie et du nom', () => {
-  assert.equal(
-    formatProductName({ ...baseProduct, subCategorie: 'vip', nom: 'napoleon' }),
-    'Vip Napoleon'
-  );
-  assert.equal(
-    formatProductName({ ...baseProduct, subCategorie: '', nom: '', categorie: 'chaise' }),
-    'Chaise'
-  );
-});
+  it('formatProductName construit le nom à partir de la sous-catégorie et du nom', () => {
+    expect(
+      formatProductName({ ...baseProduct, subCategorie: 'vip', nom: 'napoleon' })
+    ).toBe('Vip Napoleon');
 
-test('formatPrice formate un montant en FCFA', () => {
-  assert.equal(formatPrice(12500), '12 500 FCFA');
-  assert.equal(formatPrice(0), '0 FCFA');
-});
+    expect(
+      formatProductName({ ...baseProduct, subCategorie: '', nom: '', categorie: 'chaise' })
+    ).toBe('Chaise');
+  });
 
-test('productImage utilise une image disponible', () => {
-  const product = {
-    ...baseProduct,
-    image: ['image-inexistante', 'chaise_vip_napoleon_1'],
-  };
+  it('formatPrice formate un montant en FCFA', () => {
+    expect(formatPrice(12500)).toBe('12 500 FCFA');
+    expect(formatPrice(0)).toBe('0 FCFA');
+  });
 
-  assert.equal(productImage(product), '/images/chaise_vip_napoleon_1.jpg');
-});
+  it('productImage utilise une image disponible', () => {
+    const product = {
+      ...baseProduct,
+      image: ['image-inexistante', 'chaise_vip_napoleon_1'],
+    };
 
-test('productImage utilise le placeholder si aucune image n’est disponible', () => {
-  const product = {
-    ...baseProduct,
-    image: ['image-inexistante'],
-  };
+    expect(productImage(product)).toBe('/images/chaise_vip_napoleon_1.jpg');
+  });
 
-  assert.equal(productImage(product), '/images/fauteuil_tradition_simple_1.jpg');
-});
+  it('productImage utilise le placeholder si aucune image n’est disponible', () => {
+    const product = {
+      ...baseProduct,
+      image: ['image-inexistante'],
+    };
 
-test('productImages retourne uniquement les images disponibles', () => {
-  const product = {
-    ...baseProduct,
-    image: ['image-inexistante', 'chaise_vip_napoleon_1', 'chaise_vip_napoleon_2'],
-  };
+    expect(productImage(product)).toBe('/images/fauteuil_tradition_simple_1.jpg');
+  });
 
-  assert.deepEqual(productImages(product), [
-    '/images/chaise_vip_napoleon_1.jpg',
-    '/images/chaise_vip_napoleon_2.jpg',
-  ]);
+  it('productImages retourne uniquement les images disponibles', () => {
+    const product = {
+      ...baseProduct,
+      image: ['image-inexistante', 'chaise_vip_napoleon_1', 'chaise_vip_napoleon_2'],
+    };
+
+    expect(productImages(product)).toEqual([
+      '/images/chaise_vip_napoleon_1.jpg',
+      '/images/chaise_vip_napoleon_2.jpg',
+    ]);
+  });
 });
