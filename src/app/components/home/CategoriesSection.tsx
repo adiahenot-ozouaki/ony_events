@@ -1,24 +1,11 @@
-import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CategoryCard } from '../CategoryCard';
-import { fetchProducts } from '../../../lib/products';
+import { useProductCount } from '../useProductCount';
 import { categoryOrder, categoryLabels, categoryPlaceholderImages } from '../../../constants/ony_products';
 
 export function CategoriesSection() {
   const navigate = useNavigate();
-  const [productCount, setProductCount] = useState(0);
-
-  useEffect(() => {
-    let cancelled = false;
-
-    fetchProducts().then((products) => {
-      if (!cancelled) setProductCount(products.length);
-    });
-
-    return () => {
-      cancelled = true;
-    };
-  }, []);
+  const productCount = useProductCount();
 
   const categories = categoryOrder.map((cat) => ({
     key: cat,
