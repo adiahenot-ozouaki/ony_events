@@ -1,5 +1,4 @@
 import { motion } from 'motion/react';
-import { motion } from 'motion/react';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { SearchBar } from '../components/catalogue/SearchBar';
@@ -10,11 +9,6 @@ import { usePageTitle } from '../../lib/usePageTitle';
 import { useCatalogue } from '../components/catalogue/useCatalogue';
 
 export function CataloguePage() {
-  usePageTitle({
-    title: 'Catalogue',
-    description: `Parcourez nos ${productCount} références de mobilier et équipements événementiels à louer : chaises, tables, tentes, couverts et prestations.`,
-  });
-
   const {
     search,
     setSearch,
@@ -30,6 +24,11 @@ export function CataloguePage() {
     handlePageChange,
     resultsRef,
   } = useCatalogue();
+
+  usePageTitle({
+    title: 'Catalogue',
+    description: `Parcourez nos ${productCount} références de mobilier et équipements événementiels à louer : chaises, tables, tentes, couverts et prestations.`,
+  });
 
   return (
     <div className="min-h-screen bg-white">
