@@ -1,21 +1,43 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
+import { useEffect, useState } from 'react';
 import { ArrowRight } from 'lucide-react';
 import { ProductCard } from '../ProductCard';
 import { Reveal } from '../motion/Reveal';
 import { useCart } from '../../context/CartContext';
+import type { OnyItem } from '../../../constants/ony_interfaces';
+import { fetchProducts } from '../../../lib/products';
 import {
   categoryLabels,
   formatProductName,
   formatPrice,
   isVIP,
-  pickFeaturedProducts,
   productImage,
 } from '../../../constants/ony_products';
 
 export function FeaturedProductsSection() {
   const { addItem } = useCart();
-  const featuredProducts = pickFeaturedProducts();
+  const [products, setProducts] = useState<OnyItem[]>([]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    fetchProducts().then((data) => {
+      if (!cancelled) setProducts(data);
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const featuredCategories = ['Chaise', 'Couvert', 'Habillage', 'Table', 'Tente', 'Service'];
+  const featuredProducts = featuredCategories
+    .map((category) => {
+      const items = products.filter((item) => item.categorie === category);
+      return items.find(isVIP) ?? items[0];
+    })
+    .filter((item): item is OnyItem => Boolean(item));
 
   return (
     <section id="catalogue" className="py-24 bg-[var(--secondary)]">
