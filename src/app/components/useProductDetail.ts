@@ -5,13 +5,24 @@ import { fetchProducts } from '../../lib/products';
 
 export function useProductDetail(id: string | undefined) {
   const [products, setProducts] = useState<OnyItem[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
 
-    fetchProducts().then((fetchedProducts) => {
-      if (!cancelled) setProducts(fetchedProducts);
-    });
+    fetchProducts()
+      .then((fetchedProducts) => {
+        if (!cancelled) setProducts(fetchedProducts);
+      })
+      .catch((loadError) => {
+        if (!cancelled) {
+          setError(
+            loadError instanceof Error
+              ? loadError.message
+              : 'Impossible de charger le produit.'
+          );
+        }
+      });
 
     return () => {
       cancelled = true;
@@ -37,5 +48,6 @@ export function useProductDetail(id: string | undefined) {
     categoryLabel,
     vip,
     relatedProducts,
+    error,
   };
 }
