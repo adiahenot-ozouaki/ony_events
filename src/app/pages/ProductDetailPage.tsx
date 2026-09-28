@@ -10,11 +10,10 @@ import { useProductDetail } from '../components/useProductDetail';
 import { useCart } from '../context/CartContext';
 import {
   categoryLabels,
-  formatProductName,
-  formatPrice,
   isVIP,
   productImage,
 } from '../../constants/ony_products';
+import { formatProductName, formatPrice } from '../../lib/productFormatting';
 import { usePageTitle } from '../../lib/usePageTitle';
 
 export function ProductDetailPage() {
