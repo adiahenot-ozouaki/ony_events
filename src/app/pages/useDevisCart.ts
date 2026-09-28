@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import type { OnyItem } from '../../constants/ony_interfaces';
-import { categoryLabels, formatProductName } from '../../constants/ony_products';
+import { categoryLabels } from '../../constants/ony_products';
+import { formatProductName } from '../../lib/productFormatting';
 import { fetchProducts } from '../../lib/products';
 import type { CartItem } from '../context/CartContext';
 import type { QuoteFormItem } from '../components/QuoteForm';
