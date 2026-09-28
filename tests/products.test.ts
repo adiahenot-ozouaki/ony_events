@@ -179,7 +179,30 @@ describe('fetchProducts', () => {
 
     const products = await fetchProducts();
 
-    expect(products).toEqual(productRows);
+    expect(products).toEqual([
+      {
+        id: 'p-2',
+        categorie: 'Table',
+        subCategorie: 'ronde',
+        nom: 'Table ronde',
+        prix: 25000,
+        description: 'Table de test',
+        image: ['table_ronde_2'],
+        quantite: 1,
+        unite: 'piece',
+      },
+      {
+        id: 'p-1',
+        categorie: 'Chaise',
+        subCategorie: 'standard',
+        nom: 'Chaise test',
+        prix: 5000,
+        description: 'Chaise de test',
+        image: ['chaise_test'],
+        quantite: 1,
+        unite: 'piece',
+      },
+    ]);
     expect(supabaseMock.from).toHaveBeenCalledTimes(2);
   });
 });
