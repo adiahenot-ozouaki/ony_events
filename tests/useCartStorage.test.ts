@@ -160,4 +160,14 @@ describe('useCartStorage', () => {
 
     await expect(renderUseCartStorage()).resolves.not.toThrow();
   });
+
+  it('retourne un panier vide si localStorage échoue à la lecture', async () => {
+    window.localStorage.getItem.mockImplementation(() => {
+      throw new Error('Accès localStorage refusé');
+    });
+
+    const { result } = await renderUseCartStorage();
+
+    expect(result[0]).toEqual([]);
+  });
 });
