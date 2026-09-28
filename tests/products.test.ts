@@ -1,14 +1,12 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-const supabaseMock = {
+const supabaseMock = vi.hoisted(() => ({
   from: vi.fn(),
-};
+}));
 
 vi.mock('../src/lib/supabaseClient', () => ({
   supabase: supabaseMock,
 }));
-
-const { fetchProducts } = await import('../src/lib/products');
 
 const productRows = [
   {
@@ -72,12 +70,19 @@ function mockFailedQuery(message = 'Erreur de test') {
 }
 
 beforeEach(() => {
+  vi.resetModules();
   vi.clearAllMocks();
 });
+
+async function getFetchProducts() {
+  const module = await import('../src/lib/products');
+  return module.fetchProducts;
+}
 
 describe('fetchProducts', () => {
   it('récupère et transforme les produits Supabase', async () => {
     const query = mockSuccessfulQuery();
+    const fetchProducts = await getFetchProducts();
 
     const products = await fetchProducts();
 
@@ -114,6 +119,7 @@ describe('fetchProducts', () => {
 
   it('réutilise le cache après un chargement réussi', async () => {
     mockSuccessfulQuery();
+    const fetchProducts = await getFetchProducts();
 
     const first = await fetchProducts();
     const second = await fetchProducts();
@@ -123,7 +129,7 @@ describe('fetchProducts', () => {
   });
 
   it('partage la Promise pendant un chargement en cours', async () => {
-    let resolveQuery: ((value: unknown) => void) | undefined;
+    let resolveQuery: (() => void) | undefined;
 
     const query = {
       select: vi.fn(),
@@ -134,7 +140,7 @@ describe('fetchProducts', () => {
     query.select.mockReturnValue(query);
     query.order.mockReturnValue(query);
     query.then.mockImplementation((onFulfilled: (result: unknown) => unknown) => {
-      const promise = new Promise((resolve) => {
+      const promise = new Promise<void>((resolve) => {
         resolveQuery = resolve;
       });
 
@@ -143,18 +149,20 @@ describe('fetchProducts', () => {
 
     supabaseMock.from.mockReturnValue(query);
 
+    const fetchProducts = await getFetchProducts();
     const firstPromise = fetchProducts();
     const secondPromise = fetchProducts();
 
     expect(secondPromise).toBe(firstPromise);
     expect(supabaseMock.from).toHaveBeenCalledTimes(1);
 
-    resolveQuery?.(undefined);
+    resolveQuery?.();
     await firstPromise;
   });
 
   it('rejette la Promise en cas d’erreur Supabase', async () => {
     mockFailedQuery('Connexion impossible');
+    const fetchProducts = await getFetchProducts();
 
     await expect(fetchProducts()).rejects.toThrow(
       'Impossible de récupérer les produits : Connexion impossible'
@@ -163,6 +171,7 @@ describe('fetchProducts', () => {
 
   it('autorise une nouvelle tentative après une erreur', async () => {
     mockFailedQuery('Erreur temporaire');
+    const fetchProducts = await getFetchProducts();
 
     await expect(fetchProducts()).rejects.toThrow('Erreur temporaire');
 
