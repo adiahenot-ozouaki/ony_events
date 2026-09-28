@@ -3,12 +3,15 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 const hookRuntime = vi.hoisted(() => ({
   state: undefined as unknown,
   effect: undefined as (() => void) | undefined,
-  contextValue: undefined as unknown,
 }));
 
 vi.mock('react', () => {
   const context = {
     current: undefined as unknown,
+    Provider: (props: { value: unknown; children: unknown }) => {
+      context.current = props.value;
+      return { props };
+    },
   };
 
   return {
@@ -16,6 +19,10 @@ vi.mock('react', () => {
       context.current = defaultValue;
       return context;
     },
+    createElement: (
+      type: (props: { value: unknown; children: unknown }) => unknown,
+      props: { value: unknown; children: unknown }
+    ) => type(props),
     useContext: () => context.current,
     useEffect: (effect: () => void) => {
       hookRuntime.effect = effect;
@@ -94,20 +101,12 @@ describe('CartContext', () => {
   beforeEach(() => {
     hookRuntime.state = undefined;
     hookRuntime.effect = undefined;
-    hookRuntime.contextValue = undefined;
   });
 
   function renderCart() {
-    const element = CartProvider({
-      children: null,
-    });
+    const element = CartProvider({ children: null });
 
-    const providerProps = element.props as {
-      value: unknown;
-    };
-
-    hookRuntime.contextValue = providerProps.value;
-    return providerProps.value as {
+    return (element as { props: { value: unknown } }).props.value as {
       items: { id: string; quantite: number }[];
       addItem: (id: string, quantite?: number) => void;
       removeItem: (id: string) => void;
