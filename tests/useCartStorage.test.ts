@@ -158,6 +158,6 @@ describe('useCartStorage', () => {
       throw new Error('Quota dépassé');
     });
 
-    expect(() => await renderUseCartStorage()).not.toThrow();
+    await expect(renderUseCartStorage()).resolves.not.toThrow();
   });
 });
