@@ -20,7 +20,7 @@ export function ProductDetailPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { addItem } = useCart();
-  const { product, categoryLabel, vip, relatedProducts } = useProductDetail(id);
+  const { product, categoryLabel, vip, relatedProducts, error } = useProductDetail(id);
   const [quantite, setQuantite] = useState(1);
 
   // Le hook doit être appelé inconditionnellement (règles des Hooks) : on
@@ -33,9 +33,31 @@ export function ProductDetailPage() {
           description: product.description,
         }
       : {
-          title: 'Produit introuvable',
+          title: error ? 'Erreur de chargement' : 'Produit introuvable',
         }
   );
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-white">
+        <Navbar />
+        <div className="max-w-[1440px] mx-auto px-20 pt-40 pb-24 text-center">
+          <h1 className="font-[var(--font-serif)] text-4xl mb-4" style={{ fontFamily: 'var(--font-serif)' }}>
+            Impossible de charger le produit
+          </h1>
+          <p className="text-muted-foreground mb-8">{error}</p>
+          <Link
+            to="/catalogue"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-[var(--gold)] text-white rounded-md hover:opacity-90 transition-opacity"
+          >
+            <ArrowLeft size={18} />
+            Retour au catalogue
+          </Link>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
 
   if (!product) {
     return (
