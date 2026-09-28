@@ -9,11 +9,10 @@ import type { OnyItem } from '../../../constants/ony_interfaces';
 import { fetchProducts } from '../../../lib/products';
 import {
   categoryLabels,
-  formatProductName,
-  formatPrice,
   isVIP,
   productImage,
 } from '../../../constants/ony_products';
+import { formatProductName, formatPrice } from '../../../lib/productFormatting';
 
 export function FeaturedProductsSection() {
   const { addItem } = useCart();
