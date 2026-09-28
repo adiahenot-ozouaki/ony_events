@@ -1,10 +1,8 @@
 import { useEffect, useState } from 'react';
 import type { OnyItem } from '../../constants/ony_interfaces';
-import { categoryLabels } from '../../constants/ony_products';
-import { formatProductName } from '../../lib/productFormatting';
 import { fetchProducts } from '../../lib/products';
 import type { CartItem } from '../context/CartContext';
-import type { QuoteFormItem } from '../components/QuoteForm';
+import { createQuoteItems } from '../components/devis/devisUtils';
 import type { CartLine } from '../components/devis/CartSummary';
 
 export function useDevisCart(items: CartItem[]) {
@@ -34,13 +32,7 @@ export function useDevisCart(items: CartItem[]) {
     })
     .filter((line): line is CartLine => Boolean(line));
 
-  const quoteItems: QuoteFormItem[] = lines.map(({ product, quantite }) => ({
-    id: product.id,
-    nom: formatProductName(product),
-    categorie: categoryLabels[product.categorie] ?? product.categorie,
-    quantite,
-    prixUnitaire: product.prix,
-  }));
+  const quoteItems = createQuoteItems(lines);
 
   return { lines, quoteItems };
 }
