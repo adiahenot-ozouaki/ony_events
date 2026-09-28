@@ -34,14 +34,17 @@ export function useQuoteForm({ items, total }: UseQuoteFormOptions) {
     try {
       const { supabase } = await import('../../lib/supabaseClient');
 
-      const { error } = await supabase.from('devis_requests').insert({
-        nom,
-        telephone,
-        email,
-        type_evenement: typeEvenement || null,
-        message: message || null,
-        items,
-        total,
+      const { error } = await supabase.functions.invoke('submit-devis', {
+        body: {
+          nom,
+          telephone,
+          email,
+          type_evenement: typeEvenement || null,
+          message: message || null,
+          items,
+          total,
+          societe_web: societeWeb,
+        },
       });
 
       if (error) {
@@ -55,6 +58,7 @@ export function useQuoteForm({ items, total }: UseQuoteFormOptions) {
       setEmail('');
       setTypeEvenement('');
       setMessage('');
+      setSocieteWeb('');
     } catch {
       setStatus('error');
     }
