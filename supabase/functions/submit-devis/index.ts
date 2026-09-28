@@ -54,6 +54,14 @@ function clientIp(req: Request): string {
   );
 }
 
+async function hashIp(ip: string): Promise<string> {
+  const data = new TextEncoder().encode(ip);
+  const digest = await crypto.subtle.digest('SHA-256', data);
+  return Array.from(new Uint8Array(digest))
+    .map((byte) => byte.toString(16).padStart(2, '0'))
+    .join('');
+}
+
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders });
@@ -113,21 +121,22 @@ Deno.serve(async (req) => {
   const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
   const supabase = createClient(supabaseUrl, serviceKey);
 
-  const ip = clientIp(req);
+  const ipHash = await hashIp(clientIp(req));
 
   try {
     const since = new Date(Date.now() - RATE_WINDOW_MS).toISOString();
     const { count } = await supabase
       .from('devis_requests')
       .select('id', { count: 'exact', head: true })
-      .eq('ip_hash', ip)
+      .eq('ip_hash', ipHash)
       .gte('created_at', since);
 
     if (typeof count === 'number' && count >= RATE_MAX_PER_IP) {
       return json(429, { error: 'Trop de demandes. Réessayez plus tard.' });
     }
-  } catch {
-    // Table sans colonne ip_hash : continuer sans rate-limit DB
+  } catch (error) {
+    console.error('rate-limit error', error);
+    return json(500, { error: 'Erreur serveur' });
   }
 
   const { error } = await supabase.from('devis_requests').insert({
@@ -138,26 +147,10 @@ Deno.serve(async (req) => {
     message,
     items: cleanItems,
     total,
-    ip_hash: ip,
+    ip_hash: ipHash,
   });
 
   if (error) {
-    if (error.message?.includes('ip_hash') || error.code === 'PGRST204') {
-      const { error: err2 } = await supabase.from('devis_requests').insert({
-        nom,
-        telephone,
-        email,
-        type_evenement: typeEvenement,
-        message,
-        items: cleanItems,
-        total,
-      });
-      if (err2) {
-        console.error('insert error', err2);
-        return json(500, { error: 'Erreur serveur' });
-      }
-      return json(200, { ok: true });
-    }
     console.error('insert error', error);
     return json(500, { error: 'Erreur serveur' });
   }
