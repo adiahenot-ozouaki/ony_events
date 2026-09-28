@@ -43,7 +43,7 @@ function mockSuccessfulQuery(data = productRows) {
   query.select.mockReturnValue(query);
   query.order.mockReturnValue(query);
   query.then.mockImplementation((onFulfilled: (result: unknown) => unknown) =>
-    Promise.resolve(onFulfilled({ data, error: null }))
+    Promise.resolve({ data, error: null }).then(onFulfilled)
   );
 
   supabaseMock.from.mockReturnValue(query);
@@ -61,7 +61,7 @@ function mockFailedQuery(message = 'Erreur de test') {
   query.select.mockReturnValue(query);
   query.order.mockReturnValue(query);
   query.then.mockImplementation((onFulfilled: (result: unknown) => unknown) =>
-    Promise.resolve(onFulfilled({ data: null, error: { message } }))
+    Promise.resolve({ data: null, error: { message } }).then(onFulfilled)
   );
 
   supabaseMock.from.mockReturnValue(query);
