@@ -3,7 +3,7 @@ import { ArrowLeft } from 'lucide-react';
 import { CartLineItem } from './CartLineItem';
 import { useCart } from '../../context/CartContext';
 import type { OnyItem } from '../../../constants/ony_interfaces';
-import { formatPrice } from '../../../constants/ony_products';
+import { formatPrice } from '../../../lib/productFormatting';
 
 export interface CartLine {
   product: OnyItem;
