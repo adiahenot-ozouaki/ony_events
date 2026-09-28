@@ -1,12 +1,10 @@
 import { describe, expect, it } from 'vitest';
+import { isVIP, productImage, productImages } from '../src/constants/ony_products';
 import {
   capitalize,
-  isVIP,
   formatProductName,
   formatPrice,
-  productImage,
-  productImages,
-} from '../src/constants/ony_products';
+} from '../src/lib/productFormatting';
 
 const baseProduct = {
   id: 'test-1',
