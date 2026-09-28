@@ -26,22 +26,8 @@ export const categoryPlaceholderImages: Record<string, string> = {
   Service: '/images/service_hotesse_3.jpg',
 };
 
-
-export function capitalize(value: string) {
-  return value ? value.charAt(0).toUpperCase() + value.slice(1) : value;
-}
-
 export function isVIP(item: OnyItem) {
   return /vip/i.test(item.subCategorie) || /vip/i.test(item.nom);
-}
-
-export function formatProductName(item: OnyItem) {
-  const label = [item.subCategorie, item.nom].filter(Boolean).map(capitalize).join(' ');
-  return label || capitalize(item.categorie);
-}
-
-export function formatPrice(prix: number) {
-  return `${prix.toLocaleString('fr-FR')} FCFA`;
 }
 
 export function productImage(item: OnyItem) {
