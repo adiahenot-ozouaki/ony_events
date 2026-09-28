@@ -2,7 +2,8 @@ import { Trash2 } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
 import { QuantityInput } from '../QuantityInput';
 import type { OnyItem } from '../../../constants/ony_interfaces';
-import { categoryLabels, formatProductName, formatPrice, productImage } from '../../../constants/ony_products';
+import { categoryLabels, productImage } from '../../../constants/ony_products';
+import { formatProductName, formatPrice } from '../../../lib/productFormatting';
 
 interface CartLineItemProps {
   product: OnyItem;
