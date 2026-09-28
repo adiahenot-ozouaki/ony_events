@@ -2,7 +2,8 @@ import { AnimatePresence, motion } from 'motion/react';
 import { ProductCard } from '../ProductCard';
 import { useCart } from '../../context/CartContext';
 import type { OnyItem } from '../../../constants/ony_interfaces';
-import { categoryLabels, formatProductName, formatPrice, isVIP, productImage } from '../../../constants/ony_products';
+import { categoryLabels, isVIP, productImage } from '../../../constants/ony_products';
+import { formatProductName, formatPrice } from '../../../lib/productFormatting';
 
 interface ProductGridProps {
   items: OnyItem[];
