@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 const hookRuntime = vi.hoisted(() => ({
   effect: undefined as (() => void) | undefined,
   state: undefined as unknown,
+  render: undefined as (() => unknown) | undefined,
 }));
 
 vi.mock('react', () => ({
@@ -20,7 +21,7 @@ vi.mock('react', () => ({
           ? nextValue(hookRuntime.state)
           : nextValue;
 
-      hookRuntime.effect?.();
+      hookRuntime.render?.();
     };
 
     return [hookRuntime.state, setState];
@@ -49,6 +50,7 @@ describe('useCartStorage', () => {
 
     hookRuntime.effect = undefined;
     hookRuntime.state = undefined;
+    hookRuntime.render = undefined;
 
     Object.defineProperty(globalThis, 'window', {
       configurable: true,
@@ -63,12 +65,26 @@ describe('useCartStorage', () => {
     return module.useCartStorage;
   }
 
-  it('retourne un panier vide si aucun panier n’est sauvegardé', async () => {
+  async function renderUseCartStorage() {
     const useCartStorage = await getUseCartStorage();
 
-    const [items] = useCartStorage();
+    let result = useCartStorage();
+    hookRuntime.render = () => {
+      result = useCartStorage();
+      return result;
+    };
 
-    expect(items).toEqual([]);
+    return {
+      get result() {
+        return result;
+      },
+    };
+  }
+
+  it('retourne un panier vide si aucun panier n’est sauvegardé', async () => {
+    const { result } = await renderUseCartStorage();
+
+    expect(result[0]).toEqual([]);
   });
 
   it('restaure un panier valide depuis localStorage', async () => {
@@ -79,21 +95,17 @@ describe('useCartStorage', () => {
 
     window.localStorage.setItem('ony_cart', JSON.stringify(storedCart));
 
-    const useCartStorage = await getUseCartStorage();
+    const { result } = await renderUseCartStorage();
 
-    const [items] = useCartStorage();
-
-    expect(items).toEqual(storedCart);
+    expect(result[0]).toEqual(storedCart);
   });
 
   it('retourne un panier vide si le JSON est invalide', async () => {
     window.localStorage.setItem('ony_cart', '{invalid-json');
 
-    const useCartStorage = await getUseCartStorage();
+    const { result } = await renderUseCartStorage();
 
-    const [items] = useCartStorage();
-
-    expect(items).toEqual([]);
+    expect(result[0]).toEqual([]);
   });
 
   it('retourne un panier vide si la donnée sauvegardée n’est pas un tableau', async () => {
@@ -102,11 +114,9 @@ describe('useCartStorage', () => {
       JSON.stringify({ id: 'p-1', quantite: 2 })
     );
 
-    const useCartStorage = await getUseCartStorage();
+    const { result } = await renderUseCartStorage();
 
-    const [items] = useCartStorage();
-
-    expect(items).toEqual([]);
+    expect(result[0]).toEqual([]);
   });
 
   it('filtre les éléments invalides du panier sauvegardé', async () => {
@@ -121,22 +131,18 @@ describe('useCartStorage', () => {
 
     window.localStorage.setItem('ony_cart', JSON.stringify(storedCart));
 
-    const useCartStorage = await getUseCartStorage();
+    const { result } = await renderUseCartStorage();
 
-    const [items] = useCartStorage();
-
-    expect(items).toEqual([
+    expect(result[0]).toEqual([
       { id: 'p-1', quantite: 2 },
       { id: 'p-4', quantite: 3 },
     ]);
   });
 
   it('persiste les modifications du panier dans localStorage', async () => {
-    const useCartStorage = await getUseCartStorage();
+    const { result } = await renderUseCartStorage();
 
-    const [, setItems] = useCartStorage();
-
-    setItems([
+    result[1]([
       { id: 'p-1', quantite: 2 },
       { id: 'p-2', quantite: 1 },
     ]);
@@ -152,8 +158,6 @@ describe('useCartStorage', () => {
       throw new Error('Quota dépassé');
     });
 
-    const useCartStorage = await getUseCartStorage();
-
-    expect(() => useCartStorage()).not.toThrow();
+    expect(() => await renderUseCartStorage()).not.toThrow();
   });
 });
