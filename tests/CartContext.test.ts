@@ -1,7 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const hookRuntime = vi.hoisted(() => ({
-  state: undefined as unknown,
+  productState: undefined as unknown,
+  cartState: undefined as unknown,
+  effectInitialized: false,
   rerender: undefined as (() => void) | undefined,
 }));
 
@@ -50,47 +52,48 @@ vi.mock('react', () => {
     ) => type(props),
     useContext: () => context.current,
     useEffect: (effect: () => void) => {
-      effect();
+      if (!hookRuntime.effectInitialized) {
+        hookRuntime.effectInitialized = true;
+        effect();
+      }
     },
     useMemo: (factory: () => unknown) => factory(),
     useState: (initialValue: unknown) => {
-      hookRuntime.state =
-        hookRuntime.state === undefined
-          ? typeof initialValue === 'function'
-            ? initialValue()
-            : initialValue
-          : hookRuntime.state;
+      if (hookRuntime.productState === undefined) {
+        hookRuntime.productState =
+          typeof initialValue === 'function' ? initialValue() : initialValue;
+      }
 
       const setState = (nextValue: unknown) => {
-        hookRuntime.state =
+        hookRuntime.productState =
           typeof nextValue === 'function'
-            ? nextValue(hookRuntime.state)
+            ? nextValue(hookRuntime.productState)
             : nextValue;
 
         hookRuntime.rerender?.();
       };
 
-      return [hookRuntime.state, setState];
+      return [hookRuntime.productState, setState];
     },
   };
 });
 
 vi.mock('../src/app/context/useCartStorage', () => ({
   useCartStorage: () => {
-    if (hookRuntime.state === undefined) {
-      hookRuntime.state = [];
+    if (hookRuntime.cartState === undefined) {
+      hookRuntime.cartState = [];
     }
 
     const setItems = (nextValue: unknown) => {
-      hookRuntime.state =
+      hookRuntime.cartState =
         typeof nextValue === 'function'
-          ? nextValue(hookRuntime.state)
+          ? nextValue(hookRuntime.cartState)
           : nextValue;
 
       hookRuntime.rerender?.();
     };
 
-    return [hookRuntime.state, setItems];
+    return [hookRuntime.cartState, setItems];
   },
 }));
 
@@ -111,7 +114,9 @@ import { CartProvider, useCart } from '../src/app/context/CartContext';
 
 describe('CartContext', () => {
   beforeEach(() => {
-    hookRuntime.state = undefined;
+    hookRuntime.productState = undefined;
+    hookRuntime.cartState = undefined;
+    hookRuntime.effectInitialized = false;
     hookRuntime.rerender = undefined;
   });
 
