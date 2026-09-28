@@ -1,10 +1,11 @@
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useState } from 'react';
-import { ArrowLeft, Send } from 'lucide-react';
+import { Send } from 'lucide-react';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { ProductCard } from '../components/ProductCard';
 import { QuantityInput } from '../components/QuantityInput';
+import { ProductDetailFallback } from '../components/product/ProductDetailFallback';
 import { useProductDetail } from '../components/useProductDetail';
 import { useCart } from '../context/CartContext';
 import {
@@ -37,48 +38,8 @@ export function ProductDetailPage() {
         }
   );
 
-  if (error) {
-    return (
-      <div className="min-h-screen bg-white">
-        <Navbar />
-        <div className="max-w-[1440px] mx-auto px-20 pt-40 pb-24 text-center">
-          <h1 className="font-[var(--font-serif)] text-4xl mb-4" style={{ fontFamily: 'var(--font-serif)' }}>
-            Impossible de charger le produit
-          </h1>
-          <p className="text-muted-foreground mb-8">{error}</p>
-          <Link
-            to="/catalogue"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-[var(--gold)] text-white rounded-md hover:opacity-90 transition-opacity"
-          >
-            <ArrowLeft size={18} />
-            Retour au catalogue
-          </Link>
-        </div>
-        <Footer />
-      </div>
-    );
-  }
-
-  if (!product) {
-    return (
-      <div className="min-h-screen bg-white">
-        <Navbar />
-        <div className="max-w-[1440px] mx-auto px-20 pt-40 pb-24 text-center">
-          <h1 className="font-[var(--font-serif)] text-4xl mb-4" style={{ fontFamily: 'var(--font-serif)' }}>
-            Produit introuvable
-          </h1>
-          <p className="text-muted-foreground mb-8">Ce produit n'existe pas ou plus.</p>
-          <Link
-            to="/catalogue"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-[var(--gold)] text-white rounded-md hover:opacity-90 transition-opacity"
-          >
-            <ArrowLeft size={18} />
-            Retour au catalogue
-          </Link>
-        </div>
-        <Footer />
-      </div>
-    );
+  if (error || !product) {
+    return <ProductDetailFallback error={error} />;
   }
 
   return (
