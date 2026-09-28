@@ -3,8 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import type { OnyItem } from '../../../constants/ony_interfaces';
 import { fetchProducts } from '../../../lib/products';
 import { catalogueFilters, type CatalogueFilter } from './CategoryFilters';
-
-const PAGE_SIZE = 15;
+import { filterProducts, getCategoryCounts, paginateProducts } from './catalogueUtils';
 
 // Vérifie que la valeur reçue en query param correspond bien à un filtre
 // connu, pour éviter d'accepter une catégorie inventée/arbitraire dans l'URL.
@@ -63,33 +62,18 @@ export function useCatalogue() {
     }
   }
 
-  const filteredItems = useMemo(() => {
-    const query = search.trim().toLowerCase();
-    return products.filter((item) => {
-      const matchesCategory = activeFilter === 'Tous' || item.categorie === activeFilter;
-      if (!matchesCategory) return false;
-      if (!query) return true;
-      const haystack = `${item.categorie} ${item.subCategorie} ${item.nom} ${item.description}`.toLowerCase();
-      return haystack.includes(query);
-    });
-  }, [activeFilter, search, products]);
+  const filteredItems = useMemo(
+    () => filterProducts(products, activeFilter, search),
+    [activeFilter, search, products]
+  );
 
   // Revenir à la première page à chaque changement de filtre ou de recherche.
   useEffect(() => {
     setPage(1);
   }, [activeFilter, search]);
 
-  const totalPages = Math.max(1, Math.ceil(filteredItems.length / PAGE_SIZE));
-  const paginatedItems = filteredItems.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
-  const rangeStart = filteredItems.length === 0 ? 0 : (page - 1) * PAGE_SIZE + 1;
-  const rangeEnd = Math.min(page * PAGE_SIZE, filteredItems.length);
-
-  const categoryCounts = Object.fromEntries(
-    catalogueFilters.map((filter) => [
-      filter,
-      filter === 'Tous' ? products.length : products.filter((item) => item.categorie === filter).length,
-    ])
-  ) as Record<CatalogueFilter, number>;
+  const { totalPages, paginatedItems, rangeStart, rangeEnd } = paginateProducts(filteredItems, page);
+  const categoryCounts = getCategoryCounts(products, catalogueFilters);
 
   function handlePageChange(newPage: number) {
     setPage(newPage);
