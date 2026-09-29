@@ -13,6 +13,7 @@ import {
   productImage,
 } from '../../../constants/ony_products';
 import { formatProductName, formatPrice } from '../../../lib/productFormatting';
+import { getFeaturedProducts } from './featuredProductsUtils';
 
 export function FeaturedProductsSection() {
   const { addItem } = useCart();
@@ -30,13 +31,7 @@ export function FeaturedProductsSection() {
     };
   }, []);
 
-  const featuredCategories = ['Chaise', 'Couvert', 'Habillage', 'Table', 'Tente', 'Service'];
-  const featuredProducts = featuredCategories
-    .map((category) => {
-      const items = products.filter((item) => item.categorie === category);
-      return items.find(isVIP) ?? items[0];
-    })
-    .filter((item): item is OnyItem => Boolean(item));
+  const featuredProducts = getFeaturedProducts(products);
 
   return (
     <section id="catalogue" className="py-24 bg-[var(--secondary)]">
