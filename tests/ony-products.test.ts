@@ -6,6 +6,9 @@ import {
   formatPrice,
 } from '../src/lib/productFormatting';
 
+const PRODUCT_IMAGE_BASE_URL =
+  'https://apurbjscsrvczmcdwyku.supabase.co/storage/v1/object/public/images';
+
 const baseProduct = {
   id: 'test-1',
   categorie: 'Chaise',
@@ -51,7 +54,9 @@ describe('ony_products', () => {
       image: ['image-inexistante', 'chaise_vip_napoleon_1'],
     };
 
-    expect(productImage(product)).toBe('/images/chaise_vip_napoleon_1.jpg');
+    expect(productImage(product)).toBe(
+      `${PRODUCT_IMAGE_BASE_URL}/chaise_vip_napoleon_1.jpg`
+    );
   });
 
   it('productImage utilise le placeholder si aucune image n’est disponible', () => {
@@ -60,7 +65,9 @@ describe('ony_products', () => {
       image: ['image-inexistante'],
     };
 
-    expect(productImage(product)).toBe('/images/fauteuil_tradition_simple_1.jpg');
+    expect(productImage(product)).toBe(
+      `${PRODUCT_IMAGE_BASE_URL}/fauteuil_tradition_simple_1.jpg`
+    );
   });
 
   it('productImages retourne uniquement les images disponibles', () => {
@@ -70,8 +77,8 @@ describe('ony_products', () => {
     };
 
     expect(productImages(product)).toEqual([
-      '/images/chaise_vip_napoleon_1.jpg',
-      '/images/chaise_vip_napoleon_2.jpg',
+      `${PRODUCT_IMAGE_BASE_URL}/chaise_vip_napoleon_1.jpg`,
+      `${PRODUCT_IMAGE_BASE_URL}/chaise_vip_napoleon_2.jpg`,
     ]);
   });
 });
