@@ -2,6 +2,9 @@ import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { ArrowRight } from 'lucide-react';
 
+const HERO_IMAGE_URL =
+  'https://apurbjscsrvczmcdwyku.supabase.co/storage/v1/object/public/images/deco.jpg';
+
 export function HeroSection() {
   return (
     <section id="accueil" className="relative h-screen flex items-center justify-center">
@@ -11,7 +14,7 @@ export function HeroSection() {
         animate={{ scale: 1 }}
         transition={{ duration: 1.2, ease: 'easeOut' }}
         style={{
-          backgroundImage: 'url(/images/deco.jpg)',
+          backgroundImage: `url(${HERO_IMAGE_URL})`,
           backgroundPosition: 'center'
         }}
       >
