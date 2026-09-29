@@ -1,6 +1,9 @@
 import type { OnyItem } from './ony_interfaces';
 import { availableProductImages } from './product_images';
 
+const PRODUCT_IMAGE_BASE_URL =
+  'https://apurbjscsrvczmcdwyku.supabase.co/storage/v1/object/public/images';
+
 export const categoryOrder = ['Chaise', 'Couvert', 'Habillage', 'Plateau', 'Table', 'Tente', 'Service'] as const;
 
 export type ProductCategory = (typeof categoryOrder)[number];
@@ -19,13 +22,13 @@ export const categoryLabels: Record<ProductCategory, string> = {
 // et comme repli pour les produits qui n'ont pas encore de photo assignée
 // dans leur champ `image`.
 export const categoryPlaceholderImages: Record<ProductCategory, string> = {
-  Chaise: '/images/fauteuil_tradition_simple_1.jpg',
-  Couvert: '/images/couvert_complet_churchill.jpg',
-  Habillage: '/images/jupon_multi_fleur_afrik.jpg',
-  Plateau: '/images/chaffing_dish_rectangle_4.jpg',
-  Table: '/images/table_ronde_2.jpg',
-  Tente: '/images/tente_special.jpg',
-  Service: '/images/service_hotesse_3.jpg',
+  Chaise: `${PRODUCT_IMAGE_BASE_URL}/fauteuil_tradition_simple_1.jpg`,
+  Couvert: `${PRODUCT_IMAGE_BASE_URL}/couvert_complet_churchill.jpg`,
+  Habillage: `${PRODUCT_IMAGE_BASE_URL}/jupon_multi_fleur_afrik.jpg`,
+  Plateau: `${PRODUCT_IMAGE_BASE_URL}/chaffing_dish_rectangle_4.jpg`,
+  Table: `${PRODUCT_IMAGE_BASE_URL}/table_ronde_2.jpg`,
+  Tente: `${PRODUCT_IMAGE_BASE_URL}/tente_special.jpg`,
+  Service: `${PRODUCT_IMAGE_BASE_URL}/service_hotesse_3.jpg`,
 };
 
 export function isVIP(item: OnyItem) {
@@ -35,7 +38,7 @@ export function isVIP(item: OnyItem) {
 export function productImage(item: OnyItem) {
   const match = item.image.find((filename) => availableProductImages.has(filename));
   if (match) {
-    return `/images/${match}.jpg`;
+    return `${PRODUCT_IMAGE_BASE_URL}/${match}.jpg`;
   }
   return categoryPlaceholderImages[item.categorie];
 }
@@ -45,5 +48,5 @@ export function productImage(item: OnyItem) {
 export function productImages(item: OnyItem): string[] {
   return item.image
     .filter((filename) => availableProductImages.has(filename))
-    .map((filename) => `/images/${filename}.jpg`);
+    .map((filename) => `${PRODUCT_IMAGE_BASE_URL}/${filename}.jpg`);
 }
