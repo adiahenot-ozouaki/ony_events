@@ -3,7 +3,7 @@ import type { OnyItem } from '../../constants/ony_interfaces';
 import { fetchProducts } from '../../lib/products';
 import type { CartItem } from '../context/CartContext';
 import { createQuoteItems } from '../components/devis/devisUtils';
-import type { CartLine } from '../components/devis/CartSummary';
+import { resolveCartLines } from '../components/devis/resolveCartLines';
 
 export function useDevisCart(items: CartItem[]) {
   const [products, setProducts] = useState<OnyItem[]>([]);
@@ -24,14 +24,7 @@ export function useDevisCart(items: CartItem[]) {
     };
   }, []);
 
-  const lines: CartLine[] = items
-    .map((cartItem) => {
-      const product = products.find((p) => p.id === cartItem.id);
-      if (!product) return null;
-      return { product, quantite: cartItem.quantite };
-    })
-    .filter((line): line is CartLine => Boolean(line));
-
+  const lines = resolveCartLines(items, products);
   const quoteItems = createQuoteItems(lines);
 
   return { lines, quoteItems };
