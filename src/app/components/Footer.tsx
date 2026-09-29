@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { MapPin, Phone, Mail, Facebook, Instagram, Linkedin } from 'lucide-react';
 import { agencyInfo } from '../../constants/agency_info';
+import { categoryOrder, categoryLabels } from '../../constants/ony_products';
 
 const SOCIAL_LINKS = [
   { key: 'facebook', href: agencyInfo.reseaux.facebook, Icon: Facebook, label: 'Facebook' },
@@ -36,12 +37,15 @@ export function Footer() {
           <div>
             <h4 className="mb-4">Catégories</h4>
             <div className="flex flex-col gap-2 text-sm">
-              <Link to="/catalogue" className="text-gray-400 hover:text-[var(--gold)] transition-colors">Chaises</Link>
-              <Link to="/catalogue" className="text-gray-400 hover:text-[var(--gold)] transition-colors">Couverts</Link>
-              <Link to="/catalogue" className="text-gray-400 hover:text-[var(--gold)] transition-colors">Habillages</Link>
-              <Link to="/catalogue" className="text-gray-400 hover:text-[var(--gold)] transition-colors">Tables</Link>
-              <Link to="/catalogue" className="text-gray-400 hover:text-[var(--gold)] transition-colors">Tentes</Link>
-              <Link to="/catalogue" className="text-gray-400 hover:text-[var(--gold)] transition-colors">Prestations</Link>
+              {categoryOrder.map((category) => (
+                <Link
+                  key={category}
+                  to={`/catalogue?categorie=${encodeURIComponent(category)}`}
+                  className="text-gray-400 hover:text-[var(--gold)] transition-colors"
+                >
+                  {categoryLabels[category]}
+                </Link>
+              ))}
             </div>
           </div>
 
