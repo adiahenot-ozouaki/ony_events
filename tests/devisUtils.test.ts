@@ -38,14 +38,14 @@ describe('devisUtils', () => {
       {
         id: 'p-1',
         nom: 'Chaise Napoléon',
-        categorie: 'Mobilier',
+        categorie: 'Chaises',
         quantite: 3,
         prixUnitaire: 2500,
       },
       {
         id: 'p-2',
         nom: 'Enceinte Premium',
-        categorie: 'Sonorisation',
+        categorie: 'Tentes',
         quantite: 2,
         prixUnitaire: 15000,
       },
