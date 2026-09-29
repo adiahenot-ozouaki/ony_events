@@ -3,7 +3,9 @@ import { availableProductImages } from './product_images';
 
 export const categoryOrder = ['Chaise', 'Couvert', 'Habillage', 'Plateau', 'Table', 'Tente', 'Service'] as const;
 
-export const categoryLabels: Record<string, string> = {
+export type ProductCategory = (typeof categoryOrder)[number];
+
+export const categoryLabels: Record<ProductCategory, string> = {
   Chaise: 'Chaises',
   Couvert: 'Couverts',
   Habillage: 'Habillages',
@@ -16,7 +18,7 @@ export const categoryLabels: Record<string, string> = {
 // Image de repère par catégorie : utilisée pour les vignettes de catégorie
 // et comme repli pour les produits qui n'ont pas encore de photo assignée
 // dans leur champ `image`.
-export const categoryPlaceholderImages: Record<string, string> = {
+export const categoryPlaceholderImages: Record<ProductCategory, string> = {
   Chaise: '/images/fauteuil_tradition_simple_1.jpg',
   Couvert: '/images/couvert_complet_churchill.jpg',
   Habillage: '/images/jupon_multi_fleur_afrik.jpg',
