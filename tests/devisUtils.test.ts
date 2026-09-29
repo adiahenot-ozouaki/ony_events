@@ -7,7 +7,7 @@ describe('devisUtils', () => {
       {
         product: {
           id: 'p-1',
-          categorie: 'mobilier',
+          categorie: 'Chaise',
           subCategorie: 'chaise',
           nom: 'Napoléon',
           prix: 2500,
@@ -21,7 +21,7 @@ describe('devisUtils', () => {
       {
         product: {
           id: 'p-2',
-          categorie: 'sonorisation',
+          categorie: 'Tente',
           subCategorie: 'enceinte',
           nom: 'Premium',
           prix: 15000,
