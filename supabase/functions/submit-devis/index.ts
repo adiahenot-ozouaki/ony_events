@@ -88,7 +88,6 @@ Deno.serve(async (req) => {
   const typeEvenement = body.type_evenement ? String(body.type_evenement).trim() : null;
   const message = body.message ? String(body.message).trim() : null;
   const items = Array.isArray(body.items) ? body.items : [];
-  const total = typeof body.total === 'number' && Number.isFinite(body.total) ? body.total : 0;
 
   if (!nom || nom.length > MAX_NOM) {
     return json(400, { error: 'Nom invalide' });
@@ -109,18 +108,9 @@ Deno.serve(async (req) => {
     return json(400, { error: "Trop d'articles" });
   }
 
-  const cleanItems = items.slice(0, MAX_ITEMS).map((it) => ({
-    id: String(it.id ?? '').slice(0, 64),
-    nom: String(it.nom ?? '').slice(0, MAX_ITEM_NAME),
-    categorie: String(it.categorie ?? '').slice(0, 80),
-    quantite: Math.min(Math.max(Number(it.quantite) || 1, 1), 9999),
-    prixUnitaire: Math.max(Number(it.prixUnitaire) || 0, 0),
-  }));
-
   const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
   const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
   const supabase = createClient(supabaseUrl, serviceKey);
-
   const ipHash = await hashIp(clientIp(req));
 
   try {
@@ -138,6 +128,58 @@ Deno.serve(async (req) => {
     console.error('rate-limit error', error);
     return json(500, { error: 'Erreur serveur' });
   }
+
+  const productIds = items.map((item) => String(item.id ?? '').trim());
+  if (productIds.some((id) => !id)) {
+    return json(400, { error: 'Articles invalides' });
+  }
+
+  let cleanItems: Array<Record<string, unknown>> = [];
+
+  if (productIds.length > 0) {
+    const uniqueProductIds = [...new Set(productIds)];
+    const { data: products, error: productsError } = await supabase
+      .from('products')
+      .select('id, nom, categorie, prix')
+      .in('id', uniqueProductIds);
+
+    if (productsError) {
+      console.error('products lookup error', productsError);
+      return json(500, { error: 'Erreur serveur' });
+    }
+
+    const productMap = new Map((products ?? []).map((product) => [product.id, product]));
+    if (productMap.size !== uniqueProductIds.length) {
+      return json(400, { error: 'Un ou plusieurs articles sont invalides' });
+    }
+
+    if (
+      items.some((item) => {
+        const quantite = Number(item.quantite);
+        return !Number.isInteger(quantite) || quantite < 1 || quantite > 9999;
+      })
+    ) {
+      return json(400, { error: 'Quantité invalide' });
+    }
+
+    cleanItems = items.map((item) => {
+      const product = productMap.get(String(item.id).trim())!;
+      const quantite = Number(item.quantite);
+
+      return {
+        id: product.id,
+        nom: String(product.nom ?? '').slice(0, MAX_ITEM_NAME),
+        categorie: String(product.categorie ?? '').slice(0, 80),
+        quantite,
+        prixUnitaire: Number(product.prix) || 0,
+      };
+    });
+  }
+
+  const total = cleanItems.reduce(
+    (sum, item) => sum + Number(item.prixUnitaire) * Number(item.quantite),
+    0,
+  );
 
   const { error } = await supabase.from('devis_requests').insert({
     nom,
