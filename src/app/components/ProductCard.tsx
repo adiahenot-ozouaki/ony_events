@@ -90,7 +90,7 @@ export function ProductCard({
           }}
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.85 }}
-          className="absolute bottom-6 right-6 z-10 p-2 bg-[var(--gold)] text-white rounded-full hover:opacity-90 transition-opacity pointer-events-auto"
+          className="absolute bottom-6 right-6 z-10 w-11 h-11 flex items-center justify-center bg-[var(--gold)] text-white rounded-full hover:opacity-90 transition-opacity pointer-events-auto"
           aria-label={`Ajouter ${name} au devis`}
         >
           <Plus size={20} />
