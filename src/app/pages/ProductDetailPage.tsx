@@ -33,7 +33,11 @@ export function ProductDetailPage() {
           description: product.description,
         }
       : {
-          title: isLoading ? 'Chargement du produit' : error ? 'Erreur de chargement' : 'Produit introuvable',
+          title: isLoading
+            ? 'Chargement du produit'
+            : error
+              ? 'Erreur de chargement'
+              : 'Produit introuvable',
         }
   );
 
@@ -141,7 +145,7 @@ export function ProductDetailPage() {
               ))}
             </div>
           </div>
-        </div>
+        </section>
       )}
 
       <Footer />
