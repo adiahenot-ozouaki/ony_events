@@ -7,6 +7,7 @@ import { GalleryGrid } from '../components/gallery/GalleryGrid';
 import { Lightbox } from '../components/gallery/Lightbox';
 import { usePageTitle } from '../../lib/usePageTitle';
 import { useGalleryFilter } from '../components/gallery/useGalleryFilter';
+import { galleryImages } from '../../constants/gallery_images';
 
 export function GalleryPage() {
   usePageTitle({
@@ -28,7 +29,7 @@ export function GalleryPage() {
           animate={{ scale: 1 }}
           transition={{ duration: 1.2, ease: 'easeOut' }}
           style={{
-            backgroundImage: 'url(/images/decov.jpg)',
+            backgroundImage: `url(${galleryImages.find((image) => image.id === 'g5')?.src ?? ''})`,
             backgroundPosition: 'center',
           }}
         >
