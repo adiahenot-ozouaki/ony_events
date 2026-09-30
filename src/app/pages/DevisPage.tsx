@@ -12,8 +12,8 @@ export function DevisPage() {
     description: 'Finalisez votre demande de devis pour la location de mobilier et équipements événementiels au Gabon.',
   });
 
-  const { items, totalPrice } = useCart();
-  const { lines, quoteItems } = useDevisCart(items);
+  const { items, products, totalPrice } = useCart();
+  const { lines, quoteItems } = useDevisCart(items, products);
 
   return (
     <div className="min-h-screen bg-white">
