@@ -1,8 +1,8 @@
-// Liste des fichiers présents dans public/images/ (sans l'extension).
+// Liste blanche des noms de fichiers image utilisés par le catalogue produit.
 // Sert à vérifier qu'un identifiant du champ `image` des produits Supabase
-// correspond bien à une photo existante avant de l'utiliser — évite les images
-// cassées si un identifiant est mal orthographié ou si le fichier n'a pas encore
-// été fourni.
+// correspond bien à une photo disponible dans le bucket Storage avant de
+// construire son URL publique — évite les images cassées en cas d'identifiant
+// mal orthographié ou de photo non encore fournie.
 export const availableProductImages = new Set<string>([
   'accessoire_1', 'accessoire_2', 'accessoire_3', 'accessoire_4', 'accessoire_5', 'accessoire_6', 'accessoire_7', 'accessoire_8',
   'assiette_churchill', 'assiette_louis_xv', 'assiette_melamime_set', 'assiette_plate_carree', 'assiette_plate_rond',
@@ -34,7 +34,7 @@ export const availableProductImages = new Set<string>([
   'plateau', 'plateau_a_pain', 'plateau_couson_oval', 'plateau_guy_degrenne', 'plateau_rectangulaire',
   'pupitre_1', 'pupitre_2', 'pupitre_4',
   'ravier_20cm',
-  'saucière innox',
+  'sauciere_innox',
   'service_camera_video', 'service_hotesse', 'service_hotesse_2', 'service_hotesse_3',
   'service_photo', 'service_sonorisation_1', 'service_sonorisation_2',
   'service_vehicule',
