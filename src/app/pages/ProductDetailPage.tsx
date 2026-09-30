@@ -20,7 +20,7 @@ export function ProductDetailPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { addItem } = useCart();
-  const { product, categoryLabel, vip, relatedProducts, error } = useProductDetail(id);
+  const { product, categoryLabel, vip, relatedProducts, error, isLoading } = useProductDetail(id);
   const [quantite, setQuantite] = useState(1);
 
   // Le hook doit être appelé inconditionnellement (règles des Hooks) : on
@@ -33,9 +33,13 @@ export function ProductDetailPage() {
           description: product.description,
         }
       : {
-          title: error ? 'Erreur de chargement' : 'Produit introuvable',
+          title: isLoading ? 'Chargement du produit' : error ? 'Erreur de chargement' : 'Produit introuvable',
         }
   );
+
+  if (isLoading) {
+    return <ProductDetailFallback isLoading />;
+  }
 
   if (error || !product) {
     return <ProductDetailFallback error={error} />;
@@ -137,7 +141,7 @@ export function ProductDetailPage() {
               ))}
             </div>
           </div>
-        </section>
+        </div>
       )}
 
       <Footer />
