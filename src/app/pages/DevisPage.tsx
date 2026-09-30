@@ -20,7 +20,7 @@ export function DevisPage() {
       <Navbar />
 
       <section className="pt-32 pb-16">
-        <div className="max-w-[1440px] mx-auto px-20">
+        <div className="max-w-[1440px] mx-auto px-4 md:px-8 lg:px-20">
           <div className="text-center mb-12">
             <h1 className="font-[var(--font-serif)] text-5xl mb-4" style={{ fontFamily: 'var(--font-serif)' }}>
               Votre devis
