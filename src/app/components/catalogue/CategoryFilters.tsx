@@ -12,30 +12,54 @@ interface CategoryFiltersProps {
 
 export function CategoryFilters({ activeFilter, onChange, categoryCounts }: CategoryFiltersProps) {
   return (
-    <div className="flex flex-wrap justify-center gap-3">
-      {catalogueFilters.map((filter) => {
-        const isActive = activeFilter === filter;
-        const count = categoryCounts[filter];
-        const label = filter === 'Tous' ? 'Tous' : categoryLabels[filter];
-        return (
-          <motion.button
-            key={filter}
-            onClick={() => onChange(filter)}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className={`px-5 py-2.5 rounded-full text-sm transition-colors ${
-              isActive
-                ? 'bg-[var(--gold)] text-white'
-                : 'bg-white text-foreground border border-border hover:border-[var(--gold)]'
-            }`}
-          >
-            {label}{' '}
-            <span className={isActive ? 'text-white/80' : 'text-muted-foreground'}>
-              ({count})
-            </span>
-          </motion.button>
-        );
-      })}
-    </div>
+    <>
+      <div className="md:hidden max-w-sm mx-auto">
+        <label htmlFor="catalogue-category" className="sr-only">
+          Filtrer par catégorie
+        </label>
+        <select
+          id="catalogue-category"
+          value={activeFilter}
+          onChange={(event) => onChange(event.target.value as CatalogueFilter)}
+          className="w-full px-4 py-3 bg-white text-foreground rounded-md border border-border focus:outline-none focus:ring-2 focus:ring-[var(--gold)]"
+        >
+          {catalogueFilters.map((filter) => {
+            const count = categoryCounts[filter];
+            const label = filter === 'Tous' ? 'Tous' : categoryLabels[filter];
+            return (
+              <option key={filter} value={filter}>
+                {label} ({count})
+              </option>
+            );
+          })}
+        </select>
+      </div>
+
+      <div className="hidden md:flex flex-wrap justify-center gap-3">
+        {catalogueFilters.map((filter) => {
+          const isActive = activeFilter === filter;
+          const count = categoryCounts[filter];
+          const label = filter === 'Tous' ? 'Tous' : categoryLabels[filter];
+          return (
+            <motion.button
+              key={filter}
+              onClick={() => onChange(filter)}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className={`px-5 py-2.5 rounded-full text-sm transition-colors ${
+                isActive
+                  ? 'bg-[var(--gold)] text-white'
+                  : 'bg-white text-foreground border border-border hover:border-[var(--gold)]'
+              }`}
+            >
+              {label}{' '}
+              <span className={isActive ? 'text-white/80' : 'text-muted-foreground'}>
+                ({count})
+              </span>
+            </motion.button>
+          );
+        })}
+      </div>
+    </>
   );
 }
