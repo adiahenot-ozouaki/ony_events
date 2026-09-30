@@ -26,7 +26,7 @@ export function QuantityInput({ value, onChange, min = 1, size = 'md' }: Quantit
       <button
         type="button"
         onClick={() => onChange(Math.max(min, value - 1))}
-        className={`${buttonPadding} hover:text-[var(--gold)] transition-colors`}
+        className={`${buttonPadding} min-w-11 min-h-11 flex items-center justify-center hover:text-[var(--gold)] transition-colors`}
         aria-label="Diminuer la quantité"
       >
         <Minus size={iconSize} />
@@ -46,7 +46,7 @@ export function QuantityInput({ value, onChange, min = 1, size = 'md' }: Quantit
       <button
         type="button"
         onClick={() => onChange(value + 1)}
-        className={`${buttonPadding} hover:text-[var(--gold)] transition-colors`}
+        className={`${buttonPadding} min-w-11 min-h-11 flex items-center justify-center hover:text-[var(--gold)] transition-colors`}
         aria-label="Augmenter la quantité"
       >
         <Plus size={iconSize} />
