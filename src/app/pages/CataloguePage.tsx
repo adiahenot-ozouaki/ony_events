@@ -81,7 +81,7 @@ export function CataloguePage() {
       </section>
 
       <section ref={resultsRef} className="py-16 bg-white scroll-mt-24">
-        <div className="max-w-[1440px] mx-auto px-20">
+        <div className="max-w-[1440px] mx-auto px-4 md:px-8 lg:px-20">
           {isLoading ? (
             <p className="text-center text-muted-foreground py-24" role="status">
               Chargement du catalogue…
