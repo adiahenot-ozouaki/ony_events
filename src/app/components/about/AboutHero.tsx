@@ -1,5 +1,6 @@
 import { motion } from 'motion/react';
 import { agencyInfo } from '../../../constants/agency_info';
+import { galleryImages } from '../../../constants/gallery_images';
 
 export function AboutHero() {
   return (
@@ -10,7 +11,7 @@ export function AboutHero() {
         animate={{ scale: 1 }}
         transition={{ duration: 1.2, ease: 'easeOut' }}
         style={{
-          backgroundImage: 'url(/images/deco.jpg)',
+          backgroundImage: `url(${galleryImages.find((image) => image.id === 'g4')?.src ?? ''})`,
           backgroundPosition: 'center',
         }}
       >
