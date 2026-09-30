@@ -24,7 +24,17 @@ export function useCatalogue() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(1);
+  const [isMobile, setIsMobile] = useState(false);
   const resultsRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(max-width: 767px)');
+    const updateMobileState = () => setIsMobile(mediaQuery.matches);
+
+    updateMobileState();
+    mediaQuery.addEventListener('change', updateMobileState);
+    return () => mediaQuery.removeEventListener('change', updateMobileState);
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -67,12 +77,13 @@ export function useCatalogue() {
     [activeFilter, search, products]
   );
 
-  // Revenir à la première page à chaque changement de filtre ou de recherche.
+  // Revenir à la première page à chaque changement de filtre, de recherche ou de taille d'écran.
   useEffect(() => {
     setPage(1);
-  }, [activeFilter, search]);
+  }, [activeFilter, search, pageSize]);
 
-  const { totalPages, paginatedItems, rangeStart, rangeEnd } = paginateProducts(filteredItems, page);
+  const pageSize = isMobile ? 7 : 9;
+  const { totalPages, paginatedItems, rangeStart, rangeEnd } = paginateProducts(filteredItems, page, pageSize);
   const categoryCounts = getCategoryCounts(products, catalogueFilters);
 
   function handlePageChange(newPage: number) {
