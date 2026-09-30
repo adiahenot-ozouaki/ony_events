@@ -3,6 +3,7 @@ import { Reveal } from '../motion/Reveal';
 import { useProductCount } from '../useProductCount';
 import { agencyInfo } from '../../../constants/agency_info';
 import { categoryOrder } from '../../../constants/ony_products';
+import { galleryImages } from '../../../constants/gallery_images';
 
 export function AboutIntro() {
   const productCount = useProductCount();
@@ -35,7 +36,7 @@ export function AboutIntro() {
               transition={{ type: 'spring', stiffness: 250, damping: 20 }}
             >
               <img
-                src="/images/tente_special.jpg"
+                src={galleryImages.find((image) => image.id === 'g10')?.src ?? ''}
                 alt={`Mobilier ${agencyInfo.nom}`}
                 loading="lazy"
                 decoding="async"
