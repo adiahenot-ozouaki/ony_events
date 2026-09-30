@@ -15,7 +15,13 @@ function readStoredCart(): CartItem[] {
 
     return parsed.filter(
       (entry): entry is CartItem =>
-        entry && typeof entry.id === 'string' && typeof entry.quantite === 'number'
+        entry &&
+        typeof entry.id === 'string' &&
+        entry.id.trim() !== '' &&
+        typeof entry.quantite === 'number' &&
+        Number.isFinite(entry.quantite) &&
+        Number.isInteger(entry.quantite) &&
+        entry.quantite > 0
     );
   } catch {
     return [];
