@@ -53,7 +53,7 @@ export function ProductDetailPage() {
     <div className="min-h-screen bg-white">
       <Navbar />
 
-      <div className="max-w-[1440px] mx-auto px-20 pt-32 pb-4">
+      <div className="max-w-[1440px] mx-auto px-4 md:px-8 lg:px-20 pt-32 pb-4">
         <nav className="text-sm text-muted-foreground flex items-center gap-2 flex-wrap">
           <Link to="/" className="hover:text-[var(--gold)] transition-colors">Accueil</Link>
           <span>/</span>
@@ -64,7 +64,7 @@ export function ProductDetailPage() {
       </div>
 
       <section className="pb-24">
-        <div className="max-w-[1440px] mx-auto px-20">
+        <div className="max-w-[1440px] mx-auto px-4 md:px-8 lg:px-20">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mt-8">
             <div className="relative overflow-hidden rounded-lg aspect-[4/3]">
               <img
@@ -122,7 +122,7 @@ export function ProductDetailPage() {
 
       {relatedProducts.length > 0 && (
         <section className="py-24 bg-[var(--secondary)]">
-          <div className="max-w-[1440px] mx-auto px-20">
+          <div className="max-w-[1440px] mx-auto px-4 md:px-8 lg:px-20">
             <h2
               className="font-[var(--font-serif)] text-3xl mb-10"
               style={{ fontFamily: 'var(--font-serif)' }}
