@@ -77,12 +77,12 @@ export function useCatalogue() {
     [activeFilter, search, products]
   );
 
+  const pageSize = isMobile ? 7 : 9;
+
   // Revenir à la première page à chaque changement de filtre, de recherche ou de taille d'écran.
   useEffect(() => {
     setPage(1);
   }, [activeFilter, search, pageSize]);
-
-  const pageSize = isMobile ? 7 : 9;
   const { totalPages, paginatedItems, rangeStart, rangeEnd } = paginateProducts(filteredItems, page, pageSize);
   const categoryCounts = getCategoryCounts(products, catalogueFilters);
 
