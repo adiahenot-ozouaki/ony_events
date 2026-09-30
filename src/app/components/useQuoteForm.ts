@@ -1,9 +1,7 @@
-import { useRef, useState, type FormEvent } from 'react';
+import { useState, type FormEvent } from 'react';
 import type { QuoteFormItem } from './QuoteForm';
 
 type Status = 'idle' | 'loading' | 'success' | 'error';
-
-const MIN_SUBMIT_DELAY_MS = 2500;
 
 interface UseQuoteFormOptions {
   items: QuoteFormItem[];
@@ -18,13 +16,11 @@ export function useQuoteForm({ items, total }: UseQuoteFormOptions) {
   const [message, setMessage] = useState('');
   const [societeWeb, setSocieteWeb] = useState('');
   const [status, setStatus] = useState<Status>('idle');
-  const mountedAtRef = useRef(Date.now());
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
-    const submittedTooFast = Date.now() - mountedAtRef.current < MIN_SUBMIT_DELAY_MS;
-    if (societeWeb.trim() !== '' || submittedTooFast) {
+    if (societeWeb.trim() !== '') {
       setStatus('success');
       return;
     }
@@ -65,7 +61,6 @@ export function useQuoteForm({ items, total }: UseQuoteFormOptions) {
   }
 
   function reset() {
-    mountedAtRef.current = Date.now();
     setStatus('idle');
   }
 
