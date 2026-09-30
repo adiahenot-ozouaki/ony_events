@@ -7,6 +7,7 @@ import { ProductGrid } from '../components/catalogue/ProductGrid';
 import { Pagination } from '../components/catalogue/Pagination';
 import { usePageTitle } from '../../lib/usePageTitle';
 import { useCatalogue } from '../components/catalogue/useCatalogue';
+import { galleryImages } from '../../constants/gallery_images';
 
 export function CataloguePage() {
   const {
@@ -44,7 +45,7 @@ export function CataloguePage() {
           animate={{ scale: 1 }}
           transition={{ duration: 1.2, ease: 'easeOut' }}
           style={{
-            backgroundImage: 'url(/images/table_ronde_2.jpg)',
+            backgroundImage: `url(${galleryImages.find((image) => image.id === 'g2')?.src ?? ''})`,
             backgroundPosition: 'center',
           }}
         >
