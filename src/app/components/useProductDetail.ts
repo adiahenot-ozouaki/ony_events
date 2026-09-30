@@ -5,6 +5,7 @@ import { fetchProducts } from '../../lib/products';
 
 export function useProductDetail(id: string | undefined) {
   const [products, setProducts] = useState<OnyItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -22,6 +23,9 @@ export function useProductDetail(id: string | undefined) {
               : 'Impossible de charger le produit.'
           );
         }
+      })
+      .finally(() => {
+        if (!cancelled) setIsLoading(false);
       });
 
     return () => {
@@ -49,5 +53,6 @@ export function useProductDetail(id: string | undefined) {
     vip,
     relatedProducts,
     error,
+    isLoading,
   };
 }
