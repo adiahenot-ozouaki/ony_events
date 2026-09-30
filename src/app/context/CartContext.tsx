@@ -10,6 +10,7 @@ export interface CartItem {
 
 interface CartContextValue {
   items: CartItem[];
+  products: OnyItem[];
   addItem: (id: string, quantite?: number) => void;
   removeItem: (id: string) => void;
   updateQuantite: (id: string, quantite: number) => void;
@@ -82,6 +83,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const value: CartContextValue = {
     items,
+    products,
     addItem,
     removeItem,
     updateQuantite,
