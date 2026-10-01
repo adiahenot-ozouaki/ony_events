@@ -70,6 +70,8 @@ export function ProductDetailPage() {
               <img
                 src={productImage(product)}
                 alt={formatProductName(product)}
+                decoding="async"
+                fetchPriority="high"
                 className="w-full h-full object-cover"
               />
               {vip && (
