@@ -35,7 +35,7 @@ export function FeaturedProductsSection() {
 
   return (
     <section id="catalogue" className="py-24 bg-[var(--secondary)]">
-      <div className="max-w-[1440px] mx-auto px-20">
+      <div className="max-w-[1440px] mx-auto px-4 md:px-8 lg:px-20">
         <Reveal className="text-center mb-16">
           <h2
             className="font-[var(--font-serif)] text-5xl mb-4"
