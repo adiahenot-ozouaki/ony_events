@@ -39,7 +39,7 @@ export function Lightbox({ items, index, onClose, onNavigate }: LightboxProps) {
         >
           <button
             onClick={onClose}
-            className="absolute top-6 right-6 text-white/80 hover:text-white transition-colors"
+            className="absolute top-4 right-4 md:top-6 md:right-6 w-11 h-11 flex items-center justify-center text-white/80 hover:text-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black"
             aria-label="Fermer"
           >
             <X size={28} />
@@ -51,7 +51,7 @@ export function Lightbox({ items, index, onClose, onNavigate }: LightboxProps) {
                 e.stopPropagation();
                 onNavigate((index - 1 + items.length) % items.length);
               }}
-              className="absolute left-4 md:left-8 text-white/80 hover:text-white transition-colors"
+              className="absolute left-2 md:left-8 w-11 h-11 flex items-center justify-center text-white/80 hover:text-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black"
               aria-label="Image précédente"
             >
               <ChevronLeft size={36} />
@@ -76,7 +76,7 @@ export function Lightbox({ items, index, onClose, onNavigate }: LightboxProps) {
                 e.stopPropagation();
                 onNavigate((index + 1) % items.length);
               }}
-              className="absolute right-4 md:right-8 text-white/80 hover:text-white transition-colors"
+              className="absolute right-2 md:right-8 w-11 h-11 flex items-center justify-center text-white/80 hover:text-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black"
               aria-label="Image suivante"
             >
               <ChevronRight size={36} />
