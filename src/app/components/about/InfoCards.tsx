@@ -32,7 +32,7 @@ const INFO_CARDS = [
 
 export function InfoCards() {
   return (
-    <section className="py-24 bg-[var(--beige)]">
+    <section className="py-16 md:py-24 bg-[var(--beige)]">
       <div className="max-w-[1440px] mx-auto px-4 md:px-8 lg:px-20">
         <Reveal className="text-center mb-12">
           <h2 className="font-[var(--font-serif)] text-3xl" style={{ fontFamily: 'var(--font-serif)' }}>
