@@ -14,7 +14,7 @@ export function Footer() {
 
   return (
     <footer className="bg-[#0B0B0B] text-white">
-      <div className="max-w-[1440px] mx-auto px-20 py-16">
+      <div className="max-w-[1440px] mx-auto px-4 md:px-8 lg:px-20 py-16">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
           <div>
             <h3 className="font-[var(--font-serif)] text-2xl mb-4" style={{ fontFamily: 'var(--font-serif)' }}>
