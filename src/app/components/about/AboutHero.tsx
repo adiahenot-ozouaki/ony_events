@@ -20,7 +20,7 @@ export function AboutHero() {
 
       <div className="relative z-10 text-center text-white max-w-3xl mx-auto px-6">
         <motion.h1
-          className="font-[var(--font-serif)] text-5xl md:text-6xl mb-4"
+          className="font-[var(--font-serif)] text-3xl sm:text-4xl md:text-6xl mb-4"
           style={{ fontFamily: 'var(--font-serif)' }}
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
