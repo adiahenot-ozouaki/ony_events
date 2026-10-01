@@ -22,7 +22,7 @@ export function ProductDetailFallback({ error, isLoading = false }: ProductDetai
   return (
     <div className="min-h-screen bg-white">
       <Navbar />
-      <div className="max-w-[1440px] mx-auto px-20 pt-40 pb-24 text-center">
+      <div className="max-w-[1440px] mx-auto px-4 md:px-8 lg:px-20 pt-40 pb-24 text-center">
         <h1
           className="font-[var(--font-serif)] text-4xl mb-4"
           style={{ fontFamily: 'var(--font-serif)' }}
