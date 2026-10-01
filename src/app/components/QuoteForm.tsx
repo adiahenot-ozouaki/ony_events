@@ -45,7 +45,7 @@ export function QuoteForm({
     return (
       <section id="devis" className="py-24 bg-[var(--beige)]">
         <div className="max-w-[1440px] mx-auto px-4 md:px-8 lg:px-20">
-          <div className="max-w-3xl mx-auto bg-white rounded-lg p-12 shadow-lg text-center">
+          <div className="max-w-3xl mx-auto bg-white rounded-lg p-6 sm:p-8 md:p-12 shadow-lg text-center">
             <CheckCircle2 size={48} className="text-[var(--gold)] mx-auto mb-4" />
             <h2 className="font-[var(--font-serif)] text-3xl mb-2" style={{ fontFamily: 'var(--font-serif)' }}>
               Demande envoyée
