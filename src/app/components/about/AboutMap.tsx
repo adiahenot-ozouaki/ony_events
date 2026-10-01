@@ -7,7 +7,7 @@ import { agencyInfo, googleMapsEmbedUrl } from '../../../constants/agency_info';
 export function AboutMap() {
   return (
     <section className="py-24 bg-white">
-      <div className="max-w-[1440px] mx-auto px-20">
+      <div className="max-w-[1440px] mx-auto px-4 md:px-8 lg:px-20">
         <Reveal className="text-center mb-10">
           <h2 className="font-[var(--font-serif)] text-3xl" style={{ fontFamily: 'var(--font-serif)' }}>
             Nous trouver
