@@ -27,7 +27,7 @@ export function GalleryGrid({ items, onSelect }: GalleryGridProps) {
             exit={{ opacity: 0, scale: 0.92 }}
             transition={{ duration: 0.3, delay: index * 0.03 }}
             onClick={() => onSelect(index)}
-            className="group relative overflow-hidden rounded-lg aspect-[4/3] cursor-pointer text-left"
+            className="group relative overflow-hidden rounded-lg aspect-[4/3] cursor-pointer text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gold)] focus-visible:ring-offset-2"
           >
             <img
               src={image.src}
