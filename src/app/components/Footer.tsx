@@ -79,7 +79,7 @@ export function Footer() {
                   target="_blank"
                   rel="noreferrer"
                   aria-label={label}
-                  className="text-gray-400 hover:text-[var(--gold)] transition-colors"
+                  className="w-11 h-11 flex items-center justify-center text-gray-400 hover:text-[var(--gold)] transition-colors"
                 >
                   <Icon size={20} />
                 </a>
