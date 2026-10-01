@@ -101,9 +101,12 @@ export function QuoteForm({
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
               <div>
-                <label className="block mb-2 text-sm">Nom complet</label>
+                <label htmlFor="nom" className="block mb-2 text-sm">Nom complet</label>
                 <input
                   type="text"
+                  id="nom"
+                  name="nom"
+                  autoComplete="name"
                   required
                   value={nom}
                   onChange={(e) => setNom(e.target.value)}
@@ -112,9 +115,12 @@ export function QuoteForm({
                 />
               </div>
               <div>
-                <label className="block mb-2 text-sm">Téléphone</label>
+                <label htmlFor="telephone" className="block mb-2 text-sm">Téléphone</label>
                 <input
                   type="tel"
+                  id="telephone"
+                  name="telephone"
+                  autoComplete="tel"
                   required
                   value={telephone}
                   onChange={(e) => setTelephone(e.target.value)}
@@ -125,9 +131,12 @@ export function QuoteForm({
             </div>
 
             <div className="mb-6">
-              <label className="block mb-2 text-sm">Email</label>
+              <label htmlFor="email" className="block mb-2 text-sm">Email</label>
               <input
                 type="email"
+                id="email"
+                name="email"
+                autoComplete="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -137,8 +146,10 @@ export function QuoteForm({
             </div>
 
             <div className="mb-6">
-              <label className="block mb-2 text-sm">Type d'événement</label>
+              <label htmlFor="type_evenement" className="block mb-2 text-sm">Type d'événement</label>
               <select
+                id="type_evenement"
+                name="type_evenement"
                 value={typeEvenement}
                 onChange={(e) => setTypeEvenement(e.target.value)}
                 className="w-full px-4 py-3 bg-[var(--input-background)] rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--gold)]"
@@ -153,8 +164,10 @@ export function QuoteForm({
             </div>
 
             <div className="mb-6">
-              <label className="block mb-2 text-sm">Message</label>
+              <label htmlFor="message" className="block mb-2 text-sm">Message</label>
               <textarea
+                id="message"
+                name="message"
                 rows={5}
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
