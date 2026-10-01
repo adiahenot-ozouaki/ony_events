@@ -76,7 +76,7 @@ export function QuoteForm({
             <p className="text-muted-foreground text-lg">{subtitle}</p>
           </div>
 
-          <form onSubmit={handleSubmit} className="bg-white rounded-lg p-8 shadow-lg">
+          <form onSubmit={handleSubmit} className="bg-white rounded-lg p-4 sm:p-6 md:p-8 shadow-lg">
             <div
               aria-hidden="true"
               style={{
