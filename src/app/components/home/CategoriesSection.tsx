@@ -15,7 +15,7 @@ export function CategoriesSection() {
 
   return (
     <section className="py-24 bg-white">
-      <div className="max-w-[1440px] mx-auto px-20">
+      <div className="max-w-[1440px] mx-auto px-4 md:px-8 lg:px-20">
         <div className="text-center mb-16">
           <h2 className="font-[var(--font-serif)] text-5xl mb-4" style={{ fontFamily: 'var(--font-serif)' }}>
             Nos catégories
