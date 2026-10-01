@@ -63,13 +63,6 @@
     rel="stylesheet"
   />
 
-  <!-- Preload de l'image hero de l'accueil (HeroSection.tsx) : c'est le plus
-       gros élément visible au premier chargement (candidat LCP), mais comme
-       elle est posée en background-image CSS plutôt qu'en <img>, le
-       navigateur ne la découvrirait normalement qu'après avoir parsé le
-       CSS. Ce preload la fait démarrer en parallèle, dès le HTML. -->
-  <link rel="preload" as="image" href="https://apurbjscsrvczmcdwyku.supabase.co/storage/v1/object/public/images/deco.jpg" fetchpriority="high" />
-
   <style>
     html,
     body,
