@@ -15,7 +15,7 @@ export function AboutMap() {
         </Reveal>
 
         <Reveal>
-          <div className="rounded-lg overflow-hidden border border-border shadow-sm aspect-[16/7]">
+          <div className="rounded-lg overflow-hidden border border-border shadow-sm aspect-[4/3] md:aspect-[16/7]">
             <iframe
               title={`Localisation ${agencyInfo.nom}`}
               src={googleMapsEmbedUrl()}
