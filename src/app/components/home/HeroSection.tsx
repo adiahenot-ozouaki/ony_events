@@ -23,7 +23,7 @@ export function HeroSection() {
 
       <div className="relative z-10 text-center text-white max-w-4xl mx-auto px-6">
         <motion.h1
-          className="font-[var(--font-serif)] text-6xl md:text-7xl mb-6 leading-tight"
+          className="font-[var(--font-serif)] text-4xl sm:text-5xl md:text-7xl mb-6 leading-tight"
           style={{ fontFamily: 'var(--font-serif)' }}
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
