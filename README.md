@@ -1,5 +1,7 @@
 # ONY — Site vitrine & catalogue
 
+**Site en ligne :** [ony-locations-services.netlify.app](https://ony-locations-services.netlify.app)
+
 Site web pour **ONY**, agence gabonaise de location de mobilier et
 d'équipements événementiels (chaises, couverts, habillages, tables,
 tentes, prestations de service) basée à Libreville.
@@ -131,7 +133,11 @@ jamais exposée côté client.
 
 ## Déploiement
 
-Le site est déployé sur **Netlify**, configuré via `netlify.toml` :
+Le site est déployé sur **Netlify** :
+
+**URL de production :** [https://ony-locations-services.netlify.app](https://ony-locations-services.netlify.app)
+
+Configuré via `netlify.toml` :
 
 ```toml
 [build]
