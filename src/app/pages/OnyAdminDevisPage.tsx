@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabaseClient';
 import { fetchProducts } from '../../lib/products';
+import QuotePreparation from '../components/devis/QuotePreparation';
 import type { OnyItem } from '../../constants/ony_interfaces';
 
 type Request = { id:string;created_at:string;nom:string;telephone:string;email:string;type_evenement:string|null;total:number|null;message:string|null;items:unknown };
@@ -54,6 +55,7 @@ export default function OnyAdminDevisPage(){
  const [quantity,setQuantity]=useState(1);
  const [lines,setLines]=useState<Array<{product_id:string;quantity:number}>>([]);
  const [saving,setSaving]=useState(false);
+ const [prepareTarget,setPrepareTarget]=useState<{requestId?:string;quoteId?:string;initialLines:Array<{product_id:string;quantity:number}>;services?:number;delivery?:number;discount?:number;security?:number;notes?:string}|null>(null);
  async function load(){
    setLoading(true);setError('');
    try {
@@ -86,6 +88,19 @@ export default function OnyAdminDevisPage(){
      if(result.id)await show(result.id);
    }catch{setError('Création impossible : vérifiez les données ou les droits administrateur.');}
    finally{setSaving(false);}
+ }
+ async function savePreparation(values:{lines:Array<{product_id:string;quantity:number}>;services:number;delivery:number;discount:number;security:number;notes:string}){
+  if(!prepareTarget)throw new Error('Sélectionnez une demande ou un devis.');
+  const result=await api('prepare',{request_id:prepareTarget.requestId,quote_id:prepareTarget.quoteId,...values});
+  setPrepareTarget(null);setDetail(null);setTab('quotes');
+  const newList=await api('quotes');setQuotes(newList.data??[]);
+  if(result.id)await show(result.id);
+ }
+ async function editQuote(){
+  if(!detail)return;
+  const expanded=detail as Detail & {lignes:Array<{produit_id:string|null;quantite:number}>};
+  if(expanded.lignes.some(line=>!line.produit_id)){setError('Ce devis contient un article supprimé du catalogue.');return;}
+  setPrepareTarget({quoteId:detail.id,initialLines:expanded.lignes.map(line=>({product_id:line.produit_id!,quantity:line.quantite})),services:detail.montant_prestations,delivery:detail.frais_livraison,discount:detail.remise,security:detail.caution,notes:detail.notes??''});
  }
  async function login(e:React.FormEvent){
    e.preventDefault();setSigning(true);setError('');
@@ -130,20 +145,21 @@ export default function OnyAdminDevisPage(){
       <p className="text-sm text-slate-500">Prix recalculés côté Supabase. Le brouillon ne réserve pas de stock.</p>
       <button disabled={saving||lines.length===0} type="submit" className="rounded-lg bg-amber-700 disabled:opacity-50 text-white p-3">{saving?'Enregistrement…':'Enregistrer le brouillon'}</button>
     </form>}
+    {prepareTarget&&<QuotePreparation key={prepareTarget.quoteId??prepareTarget.requestId} title={prepareTarget.requestId?'Préparer la demande client':'Modifier le devis'} products={products} initialLines={prepareTarget.initialLines} initialAmounts={{services:prepareTarget.services??0,delivery:prepareTarget.delivery??0,discount:prepareTarget.discount??0,security:prepareTarget.security??0,notes:prepareTarget.notes??''}} onSave={savePreparation} onCancel={()=>setPrepareTarget(null)}/>}
     <nav aria-label="Navigation devis" className="flex gap-2 mb-5">
      <button onClick={()=>{setTab('requests');setDetail(null)}} className={`rounded-lg px-4 py-2 ${tab==='requests'?'bg-amber-700 text-white':'bg-white'}`}>Demandes clients</button>
      <button onClick={()=>{setTab('quotes');setDetail(null)}} className={`rounded-lg px-4 py-2 ${tab==='quotes'?'bg-amber-700 text-white':'bg-white'}`}>Devis préparés</button>
     </nav>
     {loading?<p role="status">Chargement…</p>:error?<p role="alert" className="bg-red-50 text-red-700 p-4 rounded-lg">{error} <button className="underline ml-3" onClick={()=>void load()}>Réessayer</button></p>:<section className="bg-white rounded-xl shadow-sm p-4 overflow-x-auto">
      {tab==='requests'?<table className="w-full text-left"><thead><tr className="border-b"><th className="p-3">Client</th><th className="p-3">Événement</th><th className="p-3">Estimation</th><th className="p-3">Date</th></tr></thead><tbody>
-      {requests.map(x=><tr key={x.id} className="border-b align-top"><td className="p-3"><strong>{x.nom}</strong><div className="text-sm">{x.email}</div><div className="text-sm">{x.telephone}</div></td><td className="p-3"><div>{x.type_evenement||'Non indiqué'}</div><details className="mt-2"><summary className="cursor-pointer text-amber-700">Voir les détails</summary><div className="mt-3 min-w-[360px] max-w-2xl rounded-lg border bg-stone-50 p-3">{x.message&&<p className="mb-3 whitespace-pre-wrap"><strong>Message : </strong>{x.message}</p>}{requestLines(x.items).length>0?<table className="w-full text-sm"><thead><tr className="border-b text-left"><th className="py-2">Article</th><th className="py-2 text-right">Qté</th><th className="py-2 text-right">Prix unitaire</th><th className="py-2 text-right">Montant</th></tr></thead><tbody>{requestLines(x.items).map((line,i)=><tr key={line.id??i} className="border-b"><td className="py-2">{line.categorie&&<span className="text-slate-500">{line.categorie} · </span>}{line.nom??line.id??'Article'}</td><td className="py-2 text-right">{line.quantite??'—'}</td><td className="py-2 text-right">{line.prixUnitaire==null?'—':money(line.prixUnitaire)}</td><td className="py-2 text-right">{line.quantite==null||line.prixUnitaire==null?'—':money(line.quantite*line.prixUnitaire)}</td></tr>)}</tbody></table>:<p className="text-sm text-slate-500">Aucun article détaillé dans cette demande.</p>}</div></details></td><td className="p-3 whitespace-nowrap">{x.total==null?'À chiffrer':money(x.total)}</td><td className="p-3 whitespace-nowrap">{new Date(x.created_at).toLocaleDateString('fr-FR')}</td></tr>)}
+      {requests.map(x=><tr key={x.id} className="border-b align-top"><td className="p-3"><strong>{x.nom}</strong><div className="text-sm">{x.email}</div><div className="text-sm">{x.telephone}</div></td><td className="p-3"><div>{x.type_evenement||'Non indiqué'}</div><button type="button" className="text-amber-800 underline text-sm mt-2" onClick={()=>setPrepareTarget({requestId:x.id,initialLines:requestLines(x.items).filter(line=>line.id&&Number.isInteger(line.quantite)&&line.quantite!>0).map(line=>({product_id:line.id!,quantity:line.quantite!})),notes:x.message??''})}>Préparer un devis</button><details className="mt-2"><summary className="cursor-pointer text-amber-700">Voir les détails</summary><div className="mt-3 min-w-[360px] max-w-2xl rounded-lg border bg-stone-50 p-3">{x.message&&<p className="mb-3 whitespace-pre-wrap"><strong>Message : </strong>{x.message}</p>}{requestLines(x.items).length>0?<table className="w-full text-sm"><thead><tr className="border-b text-left"><th className="py-2">Article</th><th className="py-2 text-right">Qté</th><th className="py-2 text-right">Prix unitaire</th><th className="py-2 text-right">Montant</th></tr></thead><tbody>{requestLines(x.items).map((line,i)=><tr key={line.id??i} className="border-b"><td className="py-2">{line.categorie&&<span className="text-slate-500">{line.categorie} · </span>}{line.nom??line.id??'Article'}</td><td className="py-2 text-right">{line.quantite??'—'}</td><td className="py-2 text-right">{line.prixUnitaire==null?'—':money(line.prixUnitaire)}</td><td className="py-2 text-right">{line.quantite==null||line.prixUnitaire==null?'—':money(line.quantite*line.prixUnitaire)}</td></tr>)}</tbody></table>:<p className="text-sm text-slate-500">Aucun article détaillé dans cette demande.</p>}</div></details></td><td className="p-3 whitespace-nowrap">{x.total==null?'À chiffrer':money(x.total)}</td><td className="p-3 whitespace-nowrap">{new Date(x.created_at).toLocaleDateString('fr-FR')}</td></tr>)}
      </tbody></table>:<table className="w-full text-left"><thead><tr className="border-b"><th className="p-3">Numéro</th><th className="p-3">Client</th><th className="p-3">Statut</th><th className="p-3">Total</th><th className="p-3">Action</th></tr></thead><tbody>
       {quotes.map(x=><tr key={x.id} className="border-b"><td className="p-3">{x.numero??'Brouillon'}</td><td className="p-3">{x.client?.nom??'—'}</td><td className="p-3">{x.statut}</td><td className="p-3">{Number(x.total_commercial).toLocaleString('fr-FR')} FCFA</td><td className="p-3"><button className="underline text-amber-700" onClick={()=>void show(x.id)}>Voir le détail</button></td></tr>)}
      </tbody></table>}
      {(tab==='requests'?requests:quotes).length===0&&<p className="p-3 text-slate-500">Aucun enregistrement.</p>}
     </section>}
     {detail&&<section className="bg-white rounded-xl p-5 mt-5" aria-label="Fiche du devis">
-      <div className="flex justify-between gap-3 items-center print:hidden"><h2 className="font-semibold text-xl">Fiche détaillée</h2><div className="flex gap-3"><button className="underline text-amber-800" onClick={()=>window.print()}>Imprimer / PDF</button><button onClick={()=>setDetail(null)} aria-label="Fermer le détail">✕</button></div></div>
+      <div className="flex justify-between gap-3 items-center print:hidden"><h2 className="font-semibold text-xl">Fiche détaillée</h2><div className="flex gap-3">{(detail.statut==='brouillon'||detail.statut==='en_preparation')&&<button type="button" className="underline text-amber-800" onClick={()=>void editQuote()}>Modifier</button>}<button className="underline text-amber-800" onClick={()=>window.print()}>Imprimer / PDF</button><button onClick={()=>setDetail(null)} aria-label="Fermer le détail">✕</button></div></div>
       <style>{`@media print { body * { visibility: hidden !important; } #ony-quote-print, #ony-quote-print * { visibility: visible !important; } #ony-quote-print { position: absolute; inset: 0; width: 100%; padding: 12mm; background: white; } @page { size: A4; margin: 12mm; } }`}</style>
       <article id="ony-quote-print" className="p-4 md:p-8">
        <header className="flex justify-between border-b border-amber-700 pb-4"><div><p className="text-3xl font-bold text-amber-800">ONY</p><p>Location et décoration événementielle</p></div><div className="text-right"><h3 className="text-xl font-semibold">DEVIS — BROUILLON</h3><p>{detail.numero??detail.id.slice(0,8)}</p><p>{new Date(detail.created_at).toLocaleDateString('fr-FR')}</p><p>{detail.statut}</p></div></header>
