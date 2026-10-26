@@ -87,24 +87,24 @@ export default function OnyAdminDevisPage(){
    </header>
    {!session?<form onSubmit={login} className="bg-white shadow-sm rounded-xl p-6 max-w-md grid gap-4">
     <h2 className="font-semibold text-xl">Connexion administrateur</h2>
-    <label>Email<input required type="email" value={email} onChange={e=>setEmail(e.target.value)} className="mt-1 w-full border rounded p-3"/></label>
-    <label>Mot de passe<input required type="password" value={password} onChange={e=>setPassword(e.target.value)} className="mt-1 w-full border rounded p-3"/></label>
+    <label>Email<input required id="ony-admin-login-email" name="email" autoComplete="username" type="email" value={email} onChange={e=>setEmail(e.target.value)} className="mt-1 w-full border rounded p-3"/></label>
+    <label>Mot de passe<input required id="ony-admin-login-password" name="password" autoComplete="current-password" type="password" value={password} onChange={e=>setPassword(e.target.value)} className="mt-1 w-full border rounded p-3"/></label>
     <button disabled={signing} className="bg-amber-700 text-white rounded p-3">{signing?'Connexion…':'Se connecter'}</button>
    </form>:<>
     <div className="mb-4 flex justify-end"><button className="rounded-lg bg-amber-700 text-white px-4 py-2" onClick={()=>setCreating(x=>!x)}>{creating?'Fermer':'Créer un devis'}</button></div>
     {creating&&<form onSubmit={createQuote} className="bg-white rounded-xl shadow-sm p-5 mb-5 grid gap-4">
       <h2 className="text-xl font-semibold">Création manuelle — brouillon</h2>
       <div className="grid gap-3 md:grid-cols-3">
-        <label>Nom du client<input required maxLength={120} className="mt-1 w-full border rounded p-2" value={nom} onChange={e=>setNom(e.target.value)}/></label>
-        <label>Téléphone<input required className="mt-1 w-full border rounded p-2" value={telephone} onChange={e=>setTelephone(e.target.value)}/></label>
-        <label>Email<input required type="email" className="mt-1 w-full border rounded p-2" value={clientEmail} onChange={e=>setClientEmail(e.target.value)}/></label>
-        <label>Type d'événement<input className="mt-1 w-full border rounded p-2" value={eventType} onChange={e=>setEventType(e.target.value)}/></label>
-        <label>Date de l'événement<input type="date" className="mt-1 w-full border rounded p-2" value={eventDate} onChange={e=>setEventDate(e.target.value)}/></label>
-        <label>Lieu<input className="mt-1 w-full border rounded p-2" value={eventPlace} onChange={e=>setEventPlace(e.target.value)}/></label>
+        <label>Nom du client<input id="ony-quote-client-name" name="client_name" autoComplete="name" required maxLength={120} className="mt-1 w-full border rounded p-2" value={nom} onChange={e=>setNom(e.target.value)}/></label>
+        <label>Téléphone<input id="ony-quote-client-phone" name="client_phone" autoComplete="tel" required className="mt-1 w-full border rounded p-2" value={telephone} onChange={e=>setTelephone(e.target.value)}/></label>
+        <label>Email<input id="ony-quote-client-email" name="client_email" autoComplete="email" required type="email" className="mt-1 w-full border rounded p-2" value={clientEmail} onChange={e=>setClientEmail(e.target.value)}/></label>
+        <label>Type d'événement<input id="ony-quote-event-type" name="event_type" className="mt-1 w-full border rounded p-2" value={eventType} onChange={e=>setEventType(e.target.value)}/></label>
+        <label>Date de l'événement<input id="ony-quote-event-date" name="event_date" type="date" className="mt-1 w-full border rounded p-2" value={eventDate} onChange={e=>setEventDate(e.target.value)}/></label>
+        <label>Lieu<input id="ony-quote-event-place" name="event_place" className="mt-1 w-full border rounded p-2" value={eventPlace} onChange={e=>setEventPlace(e.target.value)}/></label>
       </div>
       <div className="grid gap-3 md:grid-cols-[1fr_120px]">
-       <label>Article<select required className="mt-1 w-full border rounded p-2" value={productId} onChange={e=>setProductId(e.target.value)}><option value="">Choisir un article</option>{products.map(p=><option key={p.id} value={p.id}>{p.nom} — {Number(p.prix).toLocaleString('fr-FR')} FCFA</option>)}</select></label>
-       <label>Quantité<input required type="number" min="1" max="9999" className="mt-1 w-full border rounded p-2" value={quantity} onChange={e=>setQuantity(Number(e.target.value))}/></label>
+       <label>Article<select id="ony-quote-product" name="product" required className="mt-1 w-full border rounded p-2" value={productId} onChange={e=>setProductId(e.target.value)}><option value="">Choisir un article</option>{products.map(p=><option key={p.id} value={p.id}>{p.nom} — {Number(p.prix).toLocaleString('fr-FR')} FCFA</option>)}</select></label>
+       <label>Quantité<input id="ony-quote-quantity" name="quantity" required type="number" min="1" max="9999" className="mt-1 w-full border rounded p-2" value={quantity} onChange={e=>setQuantity(Number(e.target.value))}/></label>
       </div>
       <p className="text-sm text-slate-500">Les prix sont repris et recalculés par Supabase. Ce premier formulaire crée un brouillon avec une ligne d'article ; les devis multi-lignes et la validation suivront.</p>
       <button disabled={saving||!productId} type="submit" className="rounded-lg bg-amber-700 disabled:opacity-50 text-white p-3">{saving?'Enregistrement…':'Enregistrer le brouillon'}</button>
