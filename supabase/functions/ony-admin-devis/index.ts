@@ -59,6 +59,13 @@ Deno.serve(async(req)=>{
     if(error){console.error("prepare",error);return json({error:"Préparation impossible : vérifiez les montants et l'état du devis"},400);}
     return json({id:data});
   }
+  if(action==="issue"){
+    const id=String(input.id??"");
+    if(!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id))return json({error:"ID invalide"},400);
+    const {data,error}=await admin.rpc("ony_admin_issue_quote",{p_quote_id:id,p_actor:user.id});
+    if(error){console.error("issue quote",error);return json({error:"Emission refusée : vérifiez le statut et les lignes"},400);}
+    return json({numero:data});
+  }
   if(action==="requests"){
    const {data,error}=await admin.from("devis_requests").select("id,created_at,nom,telephone,email,type_evenement,message,items,total").order("created_at",{ascending:false}).limit(100);
    if(error)throw error;return json({data});
