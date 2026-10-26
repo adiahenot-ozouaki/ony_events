@@ -19,6 +19,24 @@ Deno.serve(async(req)=>{
  try{input=await req.json();}catch{return json({error:"Corps JSON invalide"},400);}
  const action=input.action;
  try {
+  if(action==="create"){
+    const name=String(input.nom??"").trim(), phone=String(input.telephone??"").trim(), email=String(input.email??"").trim();
+    const raw=Array.isArray(input.lines)?input.lines:[];
+    if(name.length<1||name.length>120||phone.length<8||phone.length>20||!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return json({error:"Coordonnées invalides"},400);
+    if(raw.length<1||raw.length>50) return json({error:"Sélectionnez entre 1 et 50 articles"},400);
+    const lines=raw.map((x:any)=>({product_id:String(x.product_id??""),quantity:Number(x.quantity)}));
+    if(lines.some((x)=>!x.product_id||!Number.isInteger(x.quantity)||x.quantity<1||x.quantity>9999)) return json({error:"Articles invalides"},400);
+    const date=input.date_evenement==null||input.date_evenement===""?null:String(input.date_evenement);
+    if(date!==null&&!/^\d{4}-\d{2}-\d{2}$/.test(date))return json({error:"Date invalide"},400);
+    const {data,error}=await admin.rpc("ony_admin_create_quote",{
+      p_client_name:name,p_client_phone:phone,p_client_email:email,
+      p_event_type:String(input.type_evenement??"").slice(0,100),
+      p_event_date:date,p_event_place:String(input.lieu_evenement??"").slice(0,500),
+      p_product_lines:lines,p_actor:user.id
+    });
+    if(error){console.error("quote create",error);return json({error:"Impossible de créer le devis"},400);}
+    return json({id:data},201);
+  }
   if(action==="requests"){
    const {data,error}=await admin.from("devis_requests").select("id,created_at,nom,telephone,email,type_evenement,message,items,total").order("created_at",{ascending:false}).limit(100);
    if(error)throw error;return json({data});
