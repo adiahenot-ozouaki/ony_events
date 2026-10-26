@@ -8,7 +8,15 @@ type Quote = {id:string;numero:string|null;statut:string;total_commercial:number
 type Detail = Record<string,unknown>;
 async function api(action:string,payload:Record<string,unknown>={}) {
  const {data,error}=await supabase.functions.invoke('ony-admin-devis',{body:{action,...payload}});
- if(error)throw error;
+ if(error) {
+   const response = (error as { context?: Response }).context;
+   let serverMessage = '';
+   if (response && typeof response.json === 'function') {
+     try { const body = await response.json(); serverMessage = String(body?.error ?? ''); } catch { /* réponse non JSON */ }
+   }
+   throw new Error(serverMessage || error.message || 'Impossible de contacter Supabase');
+ }
+ if (data?.error) throw new Error(String(data.error));
  return data;
 }
 export default function OnyAdminDevisPage(){
@@ -39,7 +47,7 @@ export default function OnyAdminDevisPage(){
      const result=await api(tab);
      if(tab==='requests')setRequests(result.data??[]);
      else setQuotes(result.data??[]);
-   }catch(e){setError('Accès refusé ou service indisponible. Vérifiez le rôle ONY de votre compte.');}
+   }catch(e){setError(e instanceof Error ? e.message : 'Impossible de charger les devis.');}
    finally{setLoading(false);}
  }
  useEffect(()=>{
@@ -105,7 +113,7 @@ export default function OnyAdminDevisPage(){
      <button onClick={()=>{setTab('requests');setDetail(null)}} className={`rounded-lg px-4 py-2 ${tab==='requests'?'bg-amber-700 text-white':'bg-white'}`}>Demandes clients</button>
      <button onClick={()=>{setTab('quotes');setDetail(null)}} className={`rounded-lg px-4 py-2 ${tab==='quotes'?'bg-amber-700 text-white':'bg-white'}`}>Devis préparés</button>
     </nav>
-    {loading?<p role="status">Chargement…</p>:<section className="bg-white rounded-xl shadow-sm p-4 overflow-x-auto">
+    {loading?<p role="status">Chargement…</p>:error?<p role="alert" className="bg-red-50 text-red-700 p-4 rounded-lg">{error} <button className="underline ml-3" onClick={()=>void load()}>Réessayer</button></p>:<section className="bg-white rounded-xl shadow-sm p-4 overflow-x-auto">
      {tab==='requests'?<table className="w-full text-left"><thead><tr className="border-b"><th className="p-3">Client</th><th className="p-3">Événement</th><th className="p-3">Estimation</th><th className="p-3">Date</th></tr></thead><tbody>
       {requests.map(x=><tr key={x.id} className="border-b"><td className="p-3"><strong>{x.nom}</strong><div className="text-sm">{x.email}</div><div className="text-sm">{x.telephone}</div></td><td className="p-3">{x.type_evenement??'Non indiqué'}<details><summary className="cursor-pointer text-amber-700">Détails</summary><p>{x.message}</p><pre className="text-xs whitespace-pre-wrap">{JSON.stringify(x.items,null,2)}</pre></details></td><td className="p-3">{Number(x.total??0).toLocaleString('fr-FR')} FCFA</td><td className="p-3">{new Date(x.created_at).toLocaleDateString('fr-FR')}</td></tr>)}
      </tbody></table>:<table className="w-full text-left"><thead><tr className="border-b"><th className="p-3">Numéro</th><th className="p-3">Client</th><th className="p-3">Statut</th><th className="p-3">Total</th><th className="p-3">Action</th></tr></thead><tbody>
@@ -115,7 +123,7 @@ export default function OnyAdminDevisPage(){
     </section>}
     {detail&&<section className="bg-white rounded-xl p-5 mt-5"><div className="flex justify-between"><h2 className="font-semibold text-xl">Détail du devis</h2><button onClick={()=>setDetail(null)} aria-label="Fermer le détail">✕</button></div><pre className="text-sm whitespace-pre-wrap break-words mt-3">{JSON.stringify(detail,null,2)}</pre></section>}
    </>}
-   {error&&<p role="alert" className="mt-4 p-3 bg-red-50 text-red-700 rounded">{error}</p>}
+   {error&&!session&&<p role="alert" className="mt-4 p-3 bg-red-50 text-red-700 rounded">{error}</p>}
   </div>
  </main>;
 }
