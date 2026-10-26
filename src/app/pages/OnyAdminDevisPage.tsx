@@ -5,7 +5,8 @@ import type { OnyItem } from '../../constants/ony_interfaces';
 
 type Request = { id:string;created_at:string;nom:string;telephone:string;email:string;type_evenement:string|null;total:number|null;message:string|null;items:unknown };
 type Quote = {id:string;numero:string|null;statut:string;total_commercial:number;created_at:string;client:{nom:string}|null};
-type Detail = Record<string,unknown>;
+type Detail={id:string;numero:string|null;statut:string;created_at:string;type_evenement:string|null;date_evenement:string|null;lieu_evenement:string|null;montant_articles:number;montant_prestations:number;frais_livraison:number;remise:number;caution:number;total_commercial:number;acompte_requis:number;notes:string|null;client:{nom:string;telephone:string;email:string}|null;lignes:Array<{id:string;designation:string;quantite:number;prix_unitaire:number;montant:number}>};
+const money=(n:number)=>Number(n??0).toLocaleString('fr-FR')+' FCFA';
 async function api(action:string,payload:Record<string,unknown>={}) {
  const {data,error}=await supabase.functions.invoke('ony-admin-devis',{body:{action,...payload}});
  if(error) {
@@ -40,6 +41,7 @@ export default function OnyAdminDevisPage(){
  const [eventPlace,setEventPlace]=useState('');
  const [productId,setProductId]=useState('');
  const [quantity,setQuantity]=useState(1);
+ const [lines,setLines]=useState<Array<{product_id:string;quantity:number}>>([]);
  const [saving,setSaving]=useState(false);
  async function load(){
    setLoading(true);setError('');
@@ -57,12 +59,18 @@ export default function OnyAdminDevisPage(){
  },[]);
  useEffect(()=>{if(session)void load();},[session,tab]);
  useEffect(()=>{if(session)void fetchProducts().then(setProducts).catch(()=>setError('Catalogue indisponible'));},[session]);
+ function addLine(){
+ if(!productId||!Number.isInteger(quantity)||quantity<1||quantity>9999||lines.length>=50)return;
+ setLines(old=>{const current=old.find(x=>x.product_id===productId);if(current){const q=current.quantity+quantity;return q>9999?old:old.map(x=>x.product_id===productId?{...x,quantity:q}:x);}return [...old,{product_id:productId,quantity}];});
+ setProductId('');setQuantity(1);
+ }
  async function createQuote(e:React.FormEvent){
    e.preventDefault();
+   if(lines.length===0){setError('Ajoutez au moins un article.');return;}
    setSaving(true);setError('');
    try {
-     const result=await api('create',{nom,telephone,email:clientEmail,type_evenement:eventType,date_evenement:eventDate||null,lieu_evenement:eventPlace,lines:[{product_id:productId,quantity}]});
-     setCreating(false);setTab('quotes');setNom('');setTelephone('');setClientEmail('');setProductId('');setQuantity(1);
+     const result=await api('create',{nom,telephone,email:clientEmail,type_evenement:eventType,date_evenement:eventDate||null,lieu_evenement:eventPlace,lines});
+     setCreating(false);setTab('quotes');setNom('');setTelephone('');setClientEmail('');setProductId('');setQuantity(1);setLines([]);
      await load();
      if(result.id)await show(result.id);
    }catch{setError('Création impossible : vérifiez les données ou les droits administrateur.');}
@@ -76,7 +84,7 @@ export default function OnyAdminDevisPage(){
  }
  async function show(id:string){
   setError('');
-  try{const result=await api('detail',{id});setDetail(result.data);}
+  try{const result=await api('detail',{id});setDetail(result.data as Detail);}
   catch{setError('Détail indisponible.');}
  }
  return <main className="min-h-screen bg-[#f7f4ef] text-slate-900 p-4 md:p-10">
@@ -106,8 +114,10 @@ export default function OnyAdminDevisPage(){
        <label>Article<select id="ony-quote-product" name="product" required className="mt-1 w-full border rounded p-2" value={productId} onChange={e=>setProductId(e.target.value)}><option value="">Choisir un article</option>{products.map(p=><option key={p.id} value={p.id}>{p.nom} — {Number(p.prix).toLocaleString('fr-FR')} FCFA</option>)}</select></label>
        <label>Quantité<input id="ony-quote-quantity" name="quantity" required type="number" min="1" max="9999" className="mt-1 w-full border rounded p-2" value={quantity} onChange={e=>setQuantity(Number(e.target.value))}/></label>
       </div>
-      <p className="text-sm text-slate-500">Les prix sont repris et recalculés par Supabase. Ce premier formulaire crée un brouillon avec une ligne d'article ; les devis multi-lignes et la validation suivront.</p>
-      <button disabled={saving||!productId} type="submit" className="rounded-lg bg-amber-700 disabled:opacity-50 text-white p-3">{saving?'Enregistrement…':'Enregistrer le brouillon'}</button>
+      <button type="button" onClick={addLine} disabled={!productId||lines.length>=50} className="border rounded-lg p-2 text-amber-800">Ajouter l'article</button>
+      {lines.length>0&&<div className="overflow-x-auto"><table className="w-full text-left"><thead><tr><th>Article</th><th>Quantité</th><th>Montant indicatif</th><th></th></tr></thead><tbody>{lines.map(line=>{const product=products.find(p=>p.id===line.product_id);return <tr key={line.product_id} className="border-t"><td className="p-2">{product?.nom??line.product_id}</td><td className="p-2">{line.quantity}</td><td className="p-2">{money(line.quantity*(product?.prix??0))}</td><td><button type="button" className="underline text-red-700" onClick={()=>setLines(old=>old.filter(x=>x.product_id!==line.product_id))}>Retirer</button></td></tr>})}</tbody></table><p className="text-right font-semibold">Estimation : {money(lines.reduce((sum,line)=>sum+line.quantity*(products.find(p=>p.id===line.product_id)?.prix??0),0))}</p></div>}
+      <p className="text-sm text-slate-500">Prix recalculés côté Supabase. Le brouillon ne réserve pas de stock.</p>
+      <button disabled={saving||lines.length===0} type="submit" className="rounded-lg bg-amber-700 disabled:opacity-50 text-white p-3">{saving?'Enregistrement…':'Enregistrer le brouillon'}</button>
     </form>}
     <nav aria-label="Navigation devis" className="flex gap-2 mb-5">
      <button onClick={()=>{setTab('requests');setDetail(null)}} className={`rounded-lg px-4 py-2 ${tab==='requests'?'bg-amber-700 text-white':'bg-white'}`}>Demandes clients</button>
@@ -121,7 +131,17 @@ export default function OnyAdminDevisPage(){
      </tbody></table>}
      {(tab==='requests'?requests:quotes).length===0&&<p className="p-3 text-slate-500">Aucun enregistrement.</p>}
     </section>}
-    {detail&&<section className="bg-white rounded-xl p-5 mt-5"><div className="flex justify-between"><h2 className="font-semibold text-xl">Détail du devis</h2><button onClick={()=>setDetail(null)} aria-label="Fermer le détail">✕</button></div><pre className="text-sm whitespace-pre-wrap break-words mt-3">{JSON.stringify(detail,null,2)}</pre></section>}
+    {detail&&<section className="bg-white rounded-xl p-5 mt-5" aria-label="Fiche du devis">
+      <div className="flex justify-between gap-3 items-center print:hidden"><h2 className="font-semibold text-xl">Fiche détaillée</h2><div className="flex gap-3"><button className="underline text-amber-800" onClick={()=>window.print()}>Imprimer / PDF</button><button onClick={()=>setDetail(null)} aria-label="Fermer le détail">✕</button></div></div>
+      <article id="ony-quote-print" className="p-4 md:p-8">
+       <header className="flex justify-between border-b border-amber-700 pb-4"><div><p className="text-3xl font-bold text-amber-800">ONY</p><p>Location et décoration événementielle</p></div><div className="text-right"><h3 className="text-xl font-semibold">DEVIS — BROUILLON</h3><p>{detail.numero??detail.id.slice(0,8)}</p><p>{new Date(detail.created_at).toLocaleDateString('fr-FR')}</p><p>{detail.statut}</p></div></header>
+       <div className="grid md:grid-cols-2 gap-5 my-6"><div><h4 className="font-semibold text-amber-800">Client</h4><p>{detail.client?.nom??'—'}</p><p>{detail.client?.telephone}</p><p>{detail.client?.email}</p></div><div><h4 className="font-semibold text-amber-800">Événement</h4><p>{detail.type_evenement??'Non précisé'}</p><p>{detail.date_evenement??'Date à confirmer'}</p><p>{detail.lieu_evenement??'Lieu à confirmer'}</p></div></div>
+       <table className="w-full text-left"><thead><tr className="border-y border-amber-700"><th className="p-2">Désignation</th><th className="p-2 text-right">Qté</th><th className="p-2 text-right">PU</th><th className="p-2 text-right">Montant</th></tr></thead><tbody>{(detail.lignes??[]).map(x=><tr key={x.id} className="border-b"><td className="p-2">{x.designation}</td><td className="p-2 text-right">{x.quantite}</td><td className="p-2 text-right">{money(x.prix_unitaire)}</td><td className="p-2 text-right">{money(x.montant)}</td></tr>)}</tbody></table>
+       <div className="mt-6 ml-auto max-w-sm space-y-2"><div className="flex justify-between"><span>Articles</span><strong>{money(detail.montant_articles)}</strong></div><div className="flex justify-between"><span>Prestations</span><span>{money(detail.montant_prestations)}</span></div><div className="flex justify-between"><span>Livraison</span><span>{money(detail.frais_livraison)}</span></div><div className="flex justify-between"><span>Remise</span><span>− {money(detail.remise)}</span></div><div className="flex justify-between border-t pt-2 text-lg"><strong>Total commercial</strong><strong>{money(detail.total_commercial)}</strong></div><div className="flex justify-between"><span>Acompte prévu</span><span>{money(detail.acompte_requis)}</span></div><div className="flex justify-between"><span>Caution distincte</span><span>{money(detail.caution)}</span></div></div>
+       {detail.notes&&<p className="mt-5">Observations : {detail.notes}</p>}
+       <p className="mt-8 text-xs text-slate-500 border-t pt-3">Document de travail non validé, non contractuel. Disponibilité et conditions à confirmer par ONY.</p>
+      </article>
+    </section>}
    </>}
    {error&&!session&&<p role="alert" className="mt-4 p-3 bg-red-50 text-red-700 rounded">{error}</p>}
   </div>
