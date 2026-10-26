@@ -28,7 +28,7 @@ async function api(action:string,payload:Record<string,unknown>={}) {
    if (response && typeof response.json === 'function') {
      try { const body = await response.json(); serverMessage = String(body?.error ?? ''); } catch { /* réponse non JSON */ }
    }
-   throw new Error(serverMessage || error.message || 'Impossible de contacter Supabase');
+   throw new Error(serverMessage || 'Le service est momentanément indisponible. Veuillez réessayer.');
  }
  if (data?.error) throw new Error(String(data.error));
  return data;
@@ -149,7 +149,7 @@ export default function OnyAdminDevisPage(){
       </div>
       <button type="button" onClick={addLine} disabled={!productId||lines.length>=50} className="border rounded-lg p-2 text-amber-800">Ajouter l'article</button>
       {lines.length>0&&<div className="overflow-x-auto"><table className="w-full text-left"><thead><tr><th>Article</th><th>Quantité</th><th>Montant indicatif</th><th></th></tr></thead><tbody>{lines.map(line=>{const product=products.find(p=>p.id===line.product_id);return <tr key={line.product_id} className="border-t"><td className="p-2">{product?.nom??line.product_id}</td><td className="p-2">{line.quantity}</td><td className="p-2">{money(line.quantity*(product?.prix??0))}</td><td><button type="button" className="underline text-red-700" onClick={()=>setLines(old=>old.filter(x=>x.product_id!==line.product_id))}>Retirer</button></td></tr>})}</tbody></table><p className="text-right font-semibold">Estimation : {money(lines.reduce((sum,line)=>sum+line.quantity*(products.find(p=>p.id===line.product_id)?.prix??0),0))}</p></div>}
-      <p className="text-sm text-slate-500">Prix recalculés côté Supabase. Le brouillon ne réserve pas de stock.</p>
+      <p className="text-sm text-slate-500">Les prix sont vérifiés automatiquement lors de l’enregistrement. Le brouillon ne réserve pas de matériel.</p>
       <button disabled={saving||lines.length===0} type="submit" className="rounded-lg bg-amber-700 disabled:opacity-50 text-white p-3">{saving?'Enregistrement…':'Enregistrer le brouillon'}</button>
     </form>}
     {prepareTarget&&<QuotePreparation key={prepareTarget.quoteId??prepareTarget.requestId} title={prepareTarget.requestId?'Préparer la demande client':'Modifier le devis'} products={products} initialLines={prepareTarget.initialLines} initialAmounts={{services:prepareTarget.services??0,delivery:prepareTarget.delivery??0,discount:prepareTarget.discount??0,security:prepareTarget.security??0,notes:prepareTarget.notes??''}} onSave={savePreparation} onCancel={()=>setPrepareTarget(null)}/>}
