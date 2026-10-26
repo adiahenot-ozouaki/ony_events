@@ -7,6 +7,17 @@ type Request = { id:string;created_at:string;nom:string;telephone:string;email:s
 type Quote = {id:string;numero:string|null;statut:string;total_commercial:number;created_at:string;client:{nom:string}|null};
 type Detail={id:string;numero:string|null;statut:string;created_at:string;type_evenement:string|null;date_evenement:string|null;lieu_evenement:string|null;montant_articles:number;montant_prestations:number;frais_livraison:number;remise:number;caution:number;total_commercial:number;acompte_requis:number;notes:string|null;client:{nom:string;telephone:string;email:string}|null;lignes:Array<{id:string;designation:string;quantite:number;prix_unitaire:number;montant:number}>};
 const money=(n:number)=>Number(n??0).toLocaleString('fr-FR')+' FCFA';
+type RequestLine={id?:string;nom?:string;quantite?:number;prixUnitaire?:number;categorie?:string};
+function requestLines(value:unknown):RequestLine[] {
+ if(!Array.isArray(value))return [];
+ return value.filter((v):v is RequestLine=>typeof v==='object'&&v!==null).map(v=>({
+  id:typeof v.id==='string'?v.id:undefined,
+  nom:typeof v.nom==='string'?v.nom:undefined,
+  categorie:typeof v.categorie==='string'?v.categorie:undefined,
+  quantite:typeof v.quantite==='number'?v.quantite:undefined,
+  prixUnitaire:typeof v.prixUnitaire==='number'?v.prixUnitaire:undefined
+ }));
+}
 async function api(action:string,payload:Record<string,unknown>={}) {
  const {data,error}=await supabase.functions.invoke('ony-admin-devis',{body:{action,...payload}});
  if(error) {
@@ -125,7 +136,7 @@ export default function OnyAdminDevisPage(){
     </nav>
     {loading?<p role="status">Chargement…</p>:error?<p role="alert" className="bg-red-50 text-red-700 p-4 rounded-lg">{error} <button className="underline ml-3" onClick={()=>void load()}>Réessayer</button></p>:<section className="bg-white rounded-xl shadow-sm p-4 overflow-x-auto">
      {tab==='requests'?<table className="w-full text-left"><thead><tr className="border-b"><th className="p-3">Client</th><th className="p-3">Événement</th><th className="p-3">Estimation</th><th className="p-3">Date</th></tr></thead><tbody>
-      {requests.map(x=><tr key={x.id} className="border-b"><td className="p-3"><strong>{x.nom}</strong><div className="text-sm">{x.email}</div><div className="text-sm">{x.telephone}</div></td><td className="p-3">{x.type_evenement??'Non indiqué'}<details><summary className="cursor-pointer text-amber-700">Détails</summary><p>{x.message}</p><pre className="text-xs whitespace-pre-wrap">{JSON.stringify(x.items,null,2)}</pre></details></td><td className="p-3">{Number(x.total??0).toLocaleString('fr-FR')} FCFA</td><td className="p-3">{new Date(x.created_at).toLocaleDateString('fr-FR')}</td></tr>)}
+      {requests.map(x=><tr key={x.id} className="border-b align-top"><td className="p-3"><strong>{x.nom}</strong><div className="text-sm">{x.email}</div><div className="text-sm">{x.telephone}</div></td><td className="p-3"><div>{x.type_evenement||'Non indiqué'}</div><details className="mt-2"><summary className="cursor-pointer text-amber-700">Voir les détails</summary><div className="mt-3 min-w-[360px] max-w-2xl rounded-lg border bg-stone-50 p-3">{x.message&&<p className="mb-3 whitespace-pre-wrap"><strong>Message : </strong>{x.message}</p>}{requestLines(x.items).length>0?<table className="w-full text-sm"><thead><tr className="border-b text-left"><th className="py-2">Article</th><th className="py-2 text-right">Qté</th><th className="py-2 text-right">Prix unitaire</th><th className="py-2 text-right">Montant</th></tr></thead><tbody>{requestLines(x.items).map((line,i)=><tr key={line.id??i} className="border-b"><td className="py-2">{line.categorie&&<span className="text-slate-500">{line.categorie} · </span>}{line.nom??line.id??'Article'}</td><td className="py-2 text-right">{line.quantite??'—'}</td><td className="py-2 text-right">{line.prixUnitaire==null?'—':money(line.prixUnitaire)}</td><td className="py-2 text-right">{line.quantite==null||line.prixUnitaire==null?'—':money(line.quantite*line.prixUnitaire)}</td></tr>)}</tbody></table>:<p className="text-sm text-slate-500">Aucun article détaillé dans cette demande.</p>}</div></details></td><td className="p-3 whitespace-nowrap">{x.total==null?'À chiffrer':money(x.total)}</td><td className="p-3 whitespace-nowrap">{new Date(x.created_at).toLocaleDateString('fr-FR')}</td></tr>)}
      </tbody></table>:<table className="w-full text-left"><thead><tr className="border-b"><th className="p-3">Numéro</th><th className="p-3">Client</th><th className="p-3">Statut</th><th className="p-3">Total</th><th className="p-3">Action</th></tr></thead><tbody>
       {quotes.map(x=><tr key={x.id} className="border-b"><td className="p-3">{x.numero??'Brouillon'}</td><td className="p-3">{x.client?.nom??'—'}</td><td className="p-3">{x.statut}</td><td className="p-3">{Number(x.total_commercial).toLocaleString('fr-FR')} FCFA</td><td className="p-3"><button className="underline text-amber-700" onClick={()=>void show(x.id)}>Voir le détail</button></td></tr>)}
      </tbody></table>}
