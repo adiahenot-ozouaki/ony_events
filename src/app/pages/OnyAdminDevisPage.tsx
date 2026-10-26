@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabaseClient';
 import { fetchProducts } from '../../lib/products';
 import QuotePreparation from '../components/devis/QuotePreparation';
+import ProductPicker from '../components/devis/ProductPicker';
 import type { OnyItem } from '../../constants/ony_interfaces';
 
 type Request = { id:string;created_at:string;nom:string;telephone:string;email:string;type_evenement:string|null;total:number|null;message:string|null;items:unknown };
@@ -133,7 +134,7 @@ export default function OnyAdminDevisPage(){
    </form>:<>
     <div className="mb-4 flex justify-end"><button className="rounded-lg bg-amber-700 text-white px-4 py-2" onClick={()=>setCreating(x=>!x)}>{creating?'Fermer':'Créer un devis'}</button></div>
     {creating&&<form onSubmit={createQuote} className="bg-white rounded-xl shadow-sm p-5 mb-5 grid gap-4">
-      <h2 className="text-xl font-semibold">Création manuelle — brouillon</h2>
+      <h2 className="text-xl font-semibold">Création manuelle — brouillon</h2><p className="text-sm text-slate-500">1. Coordonnées du client · 2. Articles · 3. Vérification du montant</p>
       <div className="grid gap-3 md:grid-cols-3">
         <label>Nom du client<input id="ony-quote-client-name" name="client_name" autoComplete="name" required maxLength={120} className="mt-1 w-full border rounded p-2" value={nom} onChange={e=>setNom(e.target.value)}/></label>
         <label>Téléphone<input id="ony-quote-client-phone" name="client_phone" autoComplete="tel" required className="mt-1 w-full border rounded p-2" value={telephone} onChange={e=>setTelephone(e.target.value)}/></label>
@@ -142,8 +143,8 @@ export default function OnyAdminDevisPage(){
         <label>Date de l'événement<input id="ony-quote-event-date" name="event_date" type="date" className="mt-1 w-full border rounded p-2" value={eventDate} onChange={e=>setEventDate(e.target.value)}/></label>
         <label>Lieu<input id="ony-quote-event-place" name="event_place" className="mt-1 w-full border rounded p-2" value={eventPlace} onChange={e=>setEventPlace(e.target.value)}/></label>
       </div>
-      <div className="grid gap-3 md:grid-cols-[1fr_120px]">
-       <label>Article<select id="ony-quote-product" name="product" required className="mt-1 w-full border rounded p-2" value={productId} onChange={e=>setProductId(e.target.value)}><option value="">Choisir un article</option>{products.map(p=><option key={p.id} value={p.id}>{p.nom} — {Number(p.prix).toLocaleString('fr-FR')} FCFA</option>)}</select></label>
+      <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_120px] items-end">
+       <div className="md:col-span-1"><ProductPicker id="ony-manual-product" products={products} value={productId} onChange={setProductId}/></div>
        <label>Quantité<input id="ony-quote-quantity" name="quantity" required type="number" min="1" max="9999" className="mt-1 w-full border rounded p-2" value={quantity} onChange={e=>setQuantity(Number(e.target.value))}/></label>
       </div>
       <button type="button" onClick={addLine} disabled={!productId||lines.length>=50} className="border rounded-lg p-2 text-amber-800">Ajouter l'article</button>
