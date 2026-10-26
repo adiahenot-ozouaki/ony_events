@@ -8,7 +8,8 @@
     "prebuild": "node scripts/generate-sitemap.mjs",
     "build": "vite build",
     "preview": "vite preview",
-    "test": "vitest run"
+    "test": "vitest run",
+    "check:ui-copy": "node scripts/check-ui-copy.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.45.0",
