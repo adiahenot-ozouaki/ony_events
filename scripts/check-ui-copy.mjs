@@ -12,7 +12,7 @@ function walk(dir) {
   lines.forEach((line,index)=>{
    if(/^\s*import\b/.test(line))return;
    // Identifiants techniques et noms de fichiers ne sont pas des textes visibles.
-   const cleaned=line.replace(/\bsupabase\b/gi,'').replace(/supabaseClient/gi,'');
+   const cleaned=line.replace(/\bsupabase\b(?=\s*[.(])/g,'').replace(/supabaseClient/g,'');
    if(/\bSupabase\b/i.test(cleaned))failures.push(relative(process.cwd(),full)+':'+(index+1));
   });
  }
