@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { OnyItem } from '../../../constants/ony_interfaces';
+import ProductPicker from './ProductPicker';
 type Line={product_id:string;quantity:number};
 type Props={products:OnyItem[];initialLines:Line[];initialAmounts?:{services:number;delivery:number;discount:number;security:number;notes:string};onSave:(data:{lines:Line[];services:number;delivery:number;discount:number;security:number;notes:string})=>Promise<void>;onCancel:()=>void;title:string};
 const money=(value:number)=>value.toLocaleString('fr-FR')+' FCFA';
@@ -29,8 +30,8 @@ export default function QuotePreparation({products,initialLines,initialAmounts,o
  }
  return <form onSubmit={submit} className="bg-white shadow-sm rounded-xl p-5 mb-5 space-y-5">
   <div className="flex justify-between items-center"><h2 className="text-xl font-semibold">{title}</h2><button type="button" onClick={onCancel} className="underline">Fermer</button></div>
-  <div className="grid md:grid-cols-[1fr_120px_auto] gap-3 items-end">
-   <label>Article<select id="ony-prep-product" name="prep_product" className="mt-1 block w-full border rounded p-2" value={productId} onChange={e=>setProductId(e.target.value)}><option value="">Sélectionner</option>{products.map(p=><option key={p.id} value={p.id}>{p.nom} — {money(p.prix)}</option>)}</select></label>
+  <div className="grid md:grid-cols-[minmax(0,1fr)_120px_auto] gap-3 items-end">
+   <ProductPicker id="ony-prep-product" products={products} value={productId} onChange={setProductId}/>
    <label>Quantité<input id="ony-prep-quantity" name="prep_quantity" type="number" min="1" max="9999" className="mt-1 block w-full border rounded p-2" value={quantity} onChange={e=>setQuantity(Number(e.target.value))}/></label>
    <button type="button" onClick={addLine} disabled={!productId} className="rounded bg-stone-100 p-2">Ajouter</button>
   </div>
