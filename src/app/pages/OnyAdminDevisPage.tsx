@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabaseClient';
+import { fetchProducts } from '../../lib/products';
+import type { OnyItem } from '../../constants/ony_interfaces';
 
 type Request = { id:string;created_at:string;nom:string;telephone:string;email:string;type_evenement:string|null;total:number|null;message:string|null;items:unknown };
 type Quote = {id:string;numero:string|null;statut:string;total_commercial:number;created_at:string;client:{nom:string}|null};
@@ -20,6 +22,17 @@ export default function OnyAdminDevisPage(){
  const [email,setEmail]=useState('');
  const [password,setPassword]=useState('');
  const [signing,setSigning]=useState(false);
+ const [creating,setCreating]=useState(false);
+ const [products,setProducts]=useState<OnyItem[]>([]);
+ const [nom,setNom]=useState('');
+ const [telephone,setTelephone]=useState('');
+ const [clientEmail,setClientEmail]=useState('');
+ const [eventDate,setEventDate]=useState('');
+ const [eventType,setEventType]=useState('');
+ const [eventPlace,setEventPlace]=useState('');
+ const [productId,setProductId]=useState('');
+ const [quantity,setQuantity]=useState(1);
+ const [saving,setSaving]=useState(false);
  async function load(){
    setLoading(true);setError('');
    try {
@@ -35,6 +48,18 @@ export default function OnyAdminDevisPage(){
    return ()=>listener.subscription.unsubscribe();
  },[]);
  useEffect(()=>{if(session)void load();},[session,tab]);
+ useEffect(()=>{if(session)void fetchProducts().then(setProducts).catch(()=>setError('Catalogue indisponible'));},[session]);
+ async function createQuote(e:React.FormEvent){
+   e.preventDefault();
+   setSaving(true);setError('');
+   try {
+     const result=await api('create',{nom,telephone,email:clientEmail,type_evenement:eventType,date_evenement:eventDate||null,lieu_evenement:eventPlace,lines:[{product_id:productId,quantity}]});
+     setCreating(false);setTab('quotes');setNom('');setTelephone('');setClientEmail('');setProductId('');setQuantity(1);
+     await load();
+     if(result.id)await show(result.id);
+   }catch{setError('Création impossible : vérifiez les données ou les droits administrateur.');}
+   finally{setSaving(false);}
+ }
  async function login(e:React.FormEvent){
    e.preventDefault();setSigning(true);setError('');
    const {error}=await supabase.auth.signInWithPassword({email,password});
@@ -58,6 +83,24 @@ export default function OnyAdminDevisPage(){
     <label>Mot de passe<input required type="password" value={password} onChange={e=>setPassword(e.target.value)} className="mt-1 w-full border rounded p-3"/></label>
     <button disabled={signing} className="bg-amber-700 text-white rounded p-3">{signing?'Connexion…':'Se connecter'}</button>
    </form>:<>
+    <div className="mb-4 flex justify-end"><button className="rounded-lg bg-amber-700 text-white px-4 py-2" onClick={()=>setCreating(x=>!x)}>{creating?'Fermer':'Créer un devis'}</button></div>
+    {creating&&<form onSubmit={createQuote} className="bg-white rounded-xl shadow-sm p-5 mb-5 grid gap-4">
+      <h2 className="text-xl font-semibold">Création manuelle — brouillon</h2>
+      <div className="grid gap-3 md:grid-cols-3">
+        <label>Nom du client<input required maxLength={120} className="mt-1 w-full border rounded p-2" value={nom} onChange={e=>setNom(e.target.value)}/></label>
+        <label>Téléphone<input required className="mt-1 w-full border rounded p-2" value={telephone} onChange={e=>setTelephone(e.target.value)}/></label>
+        <label>Email<input required type="email" className="mt-1 w-full border rounded p-2" value={clientEmail} onChange={e=>setClientEmail(e.target.value)}/></label>
+        <label>Type d'événement<input className="mt-1 w-full border rounded p-2" value={eventType} onChange={e=>setEventType(e.target.value)}/></label>
+        <label>Date de l'événement<input type="date" className="mt-1 w-full border rounded p-2" value={eventDate} onChange={e=>setEventDate(e.target.value)}/></label>
+        <label>Lieu<input className="mt-1 w-full border rounded p-2" value={eventPlace} onChange={e=>setEventPlace(e.target.value)}/></label>
+      </div>
+      <div className="grid gap-3 md:grid-cols-[1fr_120px]">
+       <label>Article<select required className="mt-1 w-full border rounded p-2" value={productId} onChange={e=>setProductId(e.target.value)}><option value="">Choisir un article</option>{products.map(p=><option key={p.id} value={p.id}>{p.nom} — {Number(p.prix).toLocaleString('fr-FR')} FCFA</option>)}</select></label>
+       <label>Quantité<input required type="number" min="1" max="9999" className="mt-1 w-full border rounded p-2" value={quantity} onChange={e=>setQuantity(Number(e.target.value))}/></label>
+      </div>
+      <p className="text-sm text-slate-500">Les prix sont repris et recalculés par Supabase. Ce premier formulaire crée un brouillon avec une ligne d'article ; les devis multi-lignes et la validation suivront.</p>
+      <button disabled={saving||!productId} type="submit" className="rounded-lg bg-amber-700 disabled:opacity-50 text-white p-3">{saving?'Enregistrement…':'Enregistrer le brouillon'}</button>
+    </form>}
     <nav aria-label="Navigation devis" className="flex gap-2 mb-5">
      <button onClick={()=>{setTab('requests');setDetail(null)}} className={`rounded-lg px-4 py-2 ${tab==='requests'?'bg-amber-700 text-white':'bg-white'}`}>Demandes clients</button>
      <button onClick={()=>{setTab('quotes');setDetail(null)}} className={`rounded-lg px-4 py-2 ${tab==='quotes'?'bg-amber-700 text-white':'bg-white'}`}>Devis préparés</button>
