@@ -39,6 +39,26 @@ Deno.serve(async(req)=>{
     if(error){console.error("quote create",error);return json({error:"Impossible de créer le devis"},400);}
     return json({id:data},201);
   }
+  if(action==="prepare"){
+    const requestId=input.request_id==null?null:String(input.request_id);
+    const quoteId=input.quote_id==null?null:String(input.quote_id);
+    const validUuid=(v:string)=>/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(v);
+    if((!requestId&&!quoteId)||(requestId&&!validUuid(requestId))||(quoteId&&!validUuid(quoteId))||(requestId&&quoteId))return json({error:"Identifiant invalide"},400);
+    const raw=Array.isArray(input.lines)?input.lines:[];
+    if(!raw.length||raw.length>50)return json({error:"Entre 1 et 50 articles requis"},400);
+    const lines=raw.map((x:any)=>({product_id:String(x.product_id??""),quantity:Number(x.quantity)}));
+    if(lines.some(x=>!x.product_id||!Number.isInteger(x.quantity)||x.quantity<1||x.quantity>9999))return json({error:"Lignes invalides"},400);
+    const amount=(key:string)=>Number(input[key]??0);
+    const values=["services","delivery","discount","security"].map(amount);
+    if(values.some(x=>!Number.isSafeInteger(x)||x<0||x>100000000000))return json({error:"Montants invalides"},400);
+    const {data,error}=await admin.rpc("ony_admin_prepare_quote",{
+      p_quote_id:quoteId,p_request_id:requestId,p_lines:lines,
+      p_services:values[0],p_delivery:values[1],p_discount:values[2],p_security:values[3],
+      p_notes:String(input.notes??"").slice(0,4000),p_actor:user.id
+    });
+    if(error){console.error("prepare",error);return json({error:"Préparation impossible : vérifiez les montants et l'état du devis"},400);}
+    return json({id:data});
+  }
   if(action==="requests"){
    const {data,error}=await admin.from("devis_requests").select("id,created_at,nom,telephone,email,type_evenement,message,items,total").order("created_at",{ascending:false}).limit(100);
    if(error)throw error;return json({data});
