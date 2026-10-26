@@ -19,7 +19,7 @@ const AboutPage = lazy(() => import('./pages/AboutPage').then((m) => ({ default:
 const GalleryPage = lazy(() =>
   import('./pages/GalleryPage').then((m) => ({ default: m.GalleryPage }))
 );
-const NotFoundPage = lazy(() =>
+const OnyAdminDevisPage = lazy(() => import('./pages/OnyAdminDevisPage'));\nconst NotFoundPage = lazy(() =>
   import('./pages/NotFoundPage').then((m) => ({ default: m.NotFoundPage }))
 );
 
@@ -46,7 +46,7 @@ export default function AnimatedRoutes() {
           <Route path="/catalogue" element={<PageTransition><CataloguePage /></PageTransition>} />
           <Route path="/produit/:id" element={<PageTransition><ProductDetailPage /></PageTransition>} />
           <Route path="/devis" element={<PageTransition><DevisPage /></PageTransition>} />
-          <Route path="/a-propos" element={<PageTransition><AboutPage /></PageTransition>} />
+          <Route path="/admin/devis" element={<OnyAdminDevisPage />} />\n          <Route path="/a-propos" element={<PageTransition><AboutPage /></PageTransition>} />
           <Route path="/galerie" element={<PageTransition><GalleryPage /></PageTransition>} />
           {/* Doit rester en dernier : capture toute route non reconnue (fautes
               de frappe, liens cassés, anciennes URLs) */}
