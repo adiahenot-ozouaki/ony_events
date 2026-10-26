@@ -6,6 +6,7 @@ const pub=Deno.env.get("SUPABASE_ANON_KEY")!;
 const secret=Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const admin=createClient(url,secret,{auth:{persistSession:false}});
 Deno.serve(async(req)=>{
+ if(req.method==="OPTIONS") return new Response("ok",{headers:cors});
  if(req.method!=="POST")return json({error:"Méthode non autorisée"},405);
  const bearer=req.headers.get("authorization")??"";
  const token=bearer.startsWith("Bearer ")?bearer.slice(7):"";
